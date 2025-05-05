@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch  src/index.js",
+    "dev": "node --watch --env-file=src/.env src/index.js",
     "start": "node src/index.js"
   },
   "keywords": [],
@@ -16,6 +16,7 @@
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
     "helmet": "^8.1.0",
@@ -26,7 +27,6 @@
     "pg": "^8.14.1",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.7",
-    "socket.io": "^4.8.1",
     "xss": "^1.0.15"
   }
 }

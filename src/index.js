@@ -1,14 +1,16 @@
 import app from "./app.js";
-// import { sequelize } from "./database/database.js";
-// import "./models/models-relations.js";
+import { sequelize } from "./database/db.js";
+import "./models/relations.js";
 
 async function main() {
   try {
-    //await sequelize.authenticate();
-    //console.log("Conexión establedica con exito a la base de datos!");
+    // await sequelize.authenticate();
+    // console.log(
+    //   "✅ La conexión con la base de datos se ha realizado con éxito."
+    // );
 
-    //Este comando permite realizar cambios en la base de datos de manera forzada
-    //await sequelize.sync({ force: true });
+    // Sincronizar base de datos (eliminar y recrear todas las tablas)
+    // await sequelize.sync({ force: true });
 
     //Este comando permite realizar cambios en la base de datos sin perder algunos campos de registro dentro de esta misma
     //await sequelize.sync({ alter: true });
