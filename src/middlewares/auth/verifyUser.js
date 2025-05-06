@@ -1,74 +1,92 @@
-//Middleware encargado de validar el rol Super Administrador
-export const verifyAdmin = (req, res, next) => {
+import { Rol } from "../../models/roles.js";
+
+const validatedRole = async (rolId) => {
   try {
-    const roleAdmin = req.rol;
+    const role = await Rol.findByPk(rolId, { attributes: ["role_name"] });
+
+    if (!role) {
+      return "Rol no encontrado";
+    }
+
+    switch (role.role_name) {
+      case "Admin":
+        return "Admin";
+
+      case "Estudiante":
+        return "Estudiante";
+
+      default:
+        return "Rol no existente";
+    }
+  } catch (error) {
+    console.error(
+      "Se ha presentado un error al intentar validar el rol del usuario.",
+      error
+    );
+
+    return res.status(500).json({
+      error:
+        "Se ha presentado un error al intentar validar el rol del usuario.",
+    });
+  }
+};
+
+//Middleware encargado de validar el rol administrador
+export const verifyAdmin = async (req, res, next) => {
+  try {
+    const roleAdmin = await validatedRole(req.rolId);
 
     if (roleAdmin === "Admin") {
-      next();
-    } else {
-      return res
-        .status(400)
-        .json({ message: "Acceso denegado, solo administrador." });
+      return next();
     }
-  } catch (error) {
-    console.log(
-      "Se ha presentado un error al intentar acceder como administrador.",
-      error
-    );
 
+    return res.status(400).json({
+      message: "Acceso denegado, solo Administrador.",
+    });
+  } catch (error) {
+    console.error("Error al validar el rol:", error);
     return res.status(500).json({
-      message:
-        "Se ha presentado un error al intentar acceder como administrador.",
+      error: "Error al validar el rol Administrador.",
     });
   }
 };
 
-//Middleware encargado de validar el rol estudiante
-export const verifyStudent = (req, res, next) => {
+// Middleware encargado de validar el rol estudiante
+export const verifyStudent = async (req, res, next) => {
   try {
-    const roleStudent = req.rol;
+    const roleStudent = await validatedRole(req.rolId);
 
     if (roleStudent === "Estudiante") {
-      next();
-    } else {
-      return res
-        .status(400)
-        .json({ message: "Acceso denegado, solo Estudiante." });
+      return next();
     }
-  } catch (error) {
-    console.log(
-      "Se ha presentado un error al intentar acceder como Estudiante.",
-      error
-    );
 
+    return res.status(400).json({
+      message: "Acceso denegado, solo Estudiante.",
+    });
+  } catch (error) {
+    console.error("Error al validar el rol:", error);
     return res.status(500).json({
-      message: "Se ha presentado un error al intentar acceder como Estudiante.",
+      error: "Error al validar el rol estudiante.",
     });
   }
 };
 
-//Middleware encargado de validar todos los roles
-export const verifyAllUsers = (req, res, next) => {
+// //Middleware encargado de validar el rol de administrador o estudiante
+export const verifyAllUsers = async (req, res, next) => {
   try {
-    const roleAdmin = req.rol;
-    const roleStudent = req.rol;
+    const role = await validatedRole(req.rolId);
 
-    if (roleAdmin === "Admin" || roleStudent === "Estudiante") {
-      next();
-    } else {
-      return res
-        .status(400)
-        .json({ message: "Acceso denegado, solo administrador o estudiante." });
+    if (role === "Admin" || role === "Estudiante") {
+      return next();
     }
-  } catch (error) {
-    console.log(
-      "Se ha presentado un error al intentar acceder como administrador o estudiante.",
-      error
-    );
 
+    return res.status(400).json({
+      message: "Acceso denegado, no tiene permisos para acceder a esta ruta.",
+    });
+  } catch (error) {
+    console.error("Error al validar el rol:", error);
     return res.status(500).json({
-      message:
-        "Se ha presentado un error al intentar acceder como administrador o estudiante.",
+      error: "Error al validar el rol del usuario.",
     });
   }
 };

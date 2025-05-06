@@ -18,7 +18,7 @@ export const login = async (req, res) => {
     // Buscar usuario y verificar en una sola consulta
     const user = await User.findOne({
       where: { email },
-      attributes: ["id", "password", "isVerified", "rolId"], // Traer solo los campos necesarios
+      attributes: ["id", "password", "isVerified", "rolId"],
     });
 
     // Si no existe el usuario, devolver error

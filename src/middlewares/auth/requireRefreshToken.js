@@ -11,15 +11,13 @@ export const requireRefreshToken = (req, res, next) => {
           "El token debe enviarse en el encabezado de autorización con el formato Bearer.",
       });
     }
-    const { uid, rol } = jwt.verify(
+    const { uid, rolId } = jwt.verify(
       refreshTokenCookie,
       process.env.JWT_REFRESH
     );
 
     req.uid = uid;
-    req.rol = rol;
-
-
+    req.rolId = rolId;
 
     next();
   } catch (error) {

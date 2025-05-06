@@ -16,10 +16,10 @@ export const requireToken = (req, res, next) => {
     token = token.split(" ")[1];
 
     //Aquí viene la información del payload que deseo mostrar destructurada
-    const { uid, rol } = jwt.verify(token, process.env.JWT_SECRET);
+    const { uid, rolId } = jwt.verify(token, process.env.JWT_SECRET);
 
     req.uid = uid;
-    req.rol = rol;
+    req.rolId = rolId;
 
     next();
   } catch (error) {
