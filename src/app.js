@@ -4,6 +4,8 @@ import cors from "cors";
 import helmet from "helmet";
 import UserRoutes from "./routes/users.routes.js";
 import AuthRoutes from "./routes/auth.routes.js";
+import DocumnetsRoutes from "./routes/documents.routes.js";
+import DocumnetTypesRoutes from "./routes/documentTypes.routes.js";
 
 const app = express();
 
@@ -25,5 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 // Rutas
 app.use("/api/gobsucre/v1/auth", AuthRoutes);
 app.use("/api/gobsucre/v1/users", UserRoutes);
+app.use("/api/gobsucre/v1/documents", DocumnetsRoutes);
+app.use("/api/gobsucre/v1/documents/types", DocumnetTypesRoutes);
 
 export default app;

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch --env-file=src/.env src/index.js",
+    "dev": "node --watch --env-file=.env src/index.js",
     "start": "node src/index.js"
   },
   "keywords": [],

@@ -4,16 +4,16 @@ import "./models/relations.js";
 
 async function main() {
   try {
-    // await sequelize.authenticate();
-    // console.log(
-    //   "✅ La conexión con la base de datos se ha realizado con éxito."
-    // );
+    //  await sequelize.authenticate();
+    //  console.log(
+    //    "✅ La conexión con la base de datos se ha realizado con éxito."
+    //  );
 
     // Sincronizar base de datos (eliminar y recrear todas las tablas)
-    // await sequelize.sync({ force: true });
+    //  await sequelize.sync({ force: true });
 
     //Este comando permite realizar cambios en la base de datos sin perder algunos campos de registro dentro de esta misma
-    //await sequelize.sync({ alter: true });
+    // await sequelize.sync({ alter: true });
 
     const PORT = process.env.PORT || 3000;
     app.listen(PORT);
