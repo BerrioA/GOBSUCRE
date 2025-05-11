@@ -84,7 +84,7 @@ export const User = sequelize.define("users", {
   // Verificación del usuario
   isVerified: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: true,
   },
   // Codigo de verificación del usuario
   verificationCode: {

@@ -42,14 +42,15 @@ const fileFilter = (req, file, cb) => {
 // Crear instancia de multer
 const upload = multer({
   storage,
-  fileFilter, // Opcional: elimina esta línea si quieres permitir todos los tipos de archivo
-  limits: { fileSize: 5 * 1024 * 1024 }, // Limitar a 5MB (opcional)
+  // Opcional: elimina esta línea si quieres permitir todos los tipos de archivo
+  fileFilter,
+  // Limitar a 5MB
+  limits: { fileSize: 5 * 1024 * 1024 },
 });
 
 // Rutas
 router.get("/", getDocuments);
 router.post("/:userId", upload.single("document"), documentUpload);
-router.post("/multi/:userId", upload.array("documents", 7), documentUpload);
 router.put("/:documentId", upload.single("document"), updateDocument);
 router.delete("/:documentId", deleteDocument);
 

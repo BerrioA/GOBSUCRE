@@ -1,6 +1,7 @@
 import app from "./app.js";
 import { sequelize } from "./database/db.js";
 import "./models/relations.js";
+import { seedDependencias } from "./models/relations.js";
 
 async function main() {
   try {
@@ -11,6 +12,9 @@ async function main() {
 
     // Sincronizar base de datos (eliminar y recrear todas las tablas)
     //  await sequelize.sync({ force: true });
+
+    // Ejecutar el hook para sembrar los datos
+    // await seedDependencias();
 
     //Este comando permite realizar cambios en la base de datos sin perder algunos campos de registro dentro de esta misma
     // await sequelize.sync({ alter: true });

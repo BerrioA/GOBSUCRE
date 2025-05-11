@@ -1,5 +1,9 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/db.js";
+import { User } from "./users.js";
+import { Institution } from "./institutions.js";
+import { Faculty } from "./faculties.js";
+import { Program } from "./programs.js";
 
 // Definición del modelo de información del practicante
 export const PractitionerInformation = sequelize.define(
@@ -12,28 +16,56 @@ export const PractitionerInformation = sequelize.define(
       allowNull: false,
       primaryKey: true,
     },
-    // Nombre del tipo de documento
-    document_name: {
-      type: DataTypes.STRING(40),
+    // Id de la universidad o institucion a la que pertenece el practicante
+    institutionId: {
+      type: DataTypes.UUID,
       allowNull: false,
-      unique: true,
+      references: {
+        model: Institution,
+        key: "id",
+      },
+    },
+    // Id de la facultad de la universidad o institucion a la que pertenece el practicante
+    FacultyId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: Faculty,
+        key: "id",
+      },
+    },
+    // Id del programa o carrera a la que pertenece el practicante
+    programId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: Program,
+        key: "id",
+      },
+    },
+    // Fecha de inicio de practica
+    start_date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    // Estado del usuario
+    status: {
+      type: DataTypes.ENUM(
+        "Pendiente de inicio",
+        "activo",
+        "inactivo",
+        "Finalizado"
+      ),
+      defaultValue: "Pendiente de inicio",
+    },
+    // Id del estudiante al que pertenece la inforacion del practicas
+    userId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: User,
+        key: "id",
+      },
     },
   }
 );
-
-// Hook para insertar tipos de documentos después de sincronizar la tabla
-DocumentType.afterSync(async () => {
-  const types = [
-    "Hoja de vida",
-    "Contraloría",
-    "Procuraduría",
-    "SISBEN",
-    "ADRES",
-    "Primer documento jurídico",
-    "Segundo documento jurídico",
-  ];
-  await DocumentType.bulkCreate(
-    types.map((type) => ({ document_name: type })),
-    { ignoreDuplicates: true }
-  );
-});
