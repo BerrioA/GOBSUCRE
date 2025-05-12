@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/db.js";
+import { Institution } from "./institutions.js";
 
 // Definición del modelo facultades
 export const Faculty = sequelize.define("faculties", {
@@ -11,9 +12,17 @@ export const Faculty = sequelize.define("faculties", {
     primaryKey: true,
   },
   // Nombre de la facultad
-  university_name: {
-    type: DataTypes.STRING(40),
+  faculty_name: {
+    type: DataTypes.STRING(200),
     allowNull: false,
-    unique: true,
+  },
+  // Id de la institucion
+  institutionId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: Institution,
+      key: "id",
+    },
   },
 });

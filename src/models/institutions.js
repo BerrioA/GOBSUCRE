@@ -23,20 +23,3 @@ export const Institution = sequelize.define("institutions", {
     unique: true,
   },
 });
-
-// Hook para insertar tipos de documentos después de sincronizar la tabla
-// DocumentType.afterSync(async () => {
-//   const types = [
-//     "Hoja de vida",
-//     "Contraloría",
-//     "Procuraduría",
-//     "SISBEN",
-//     "ADRES",
-//     "Primer documento jurídico",
-//     "Segundo documento jurídico",
-//   ];
-//   await DocumentType.bulkCreate(
-//     types.map((type) => ({ document_name: type })),
-//     { ignoreDuplicates: true }
-//   );
-// });
