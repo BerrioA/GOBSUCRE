@@ -7,12 +7,22 @@ import { PractitionerInformation } from "../../models/practitionerInformation.js
 export const getStudents = async (req, res) => {
   try {
     const studens = await User.findAll({
+      attributes: [
+        "id",
+        "name",
+        "middle_name",
+        "last_name",
+        "second_last_name",
+        "document_type",
+        "document_number",
+        "cellphone",
+        "email",
+      ],
       include: [
         {
           model: Rol,
-          where: {
-            role_name: "Estudiante",
-          },
+          where: { role_name: "Estudiante" },
+          attributes: ["role_name"],
         },
       ],
     });
@@ -20,7 +30,8 @@ export const getStudents = async (req, res) => {
     return res.status(200).json(studens);
   } catch (error) {
     console.log(
-      "Se ha presentado un error al intentar optener los datos de los estudiantes."
+      "Se ha presentado un error al intentar optener los datos de los estudiantes.",
+      error
     );
 
     return res.status(500).json({

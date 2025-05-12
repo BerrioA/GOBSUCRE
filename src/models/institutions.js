@@ -12,7 +12,7 @@ export const Institution = sequelize.define("institutions", {
   },
   // Nombre de la universidad o corporación
   university_name: {
-    type: DataTypes.STRING(40),
+    type: DataTypes.STRING(150),
     allowNull: false,
     unique: true,
   },

@@ -10,7 +10,7 @@ const router = Router();
 
 router.get("/", getPractitionerInformation);
 router.post("/:userId", registerPractitionerInformation);
-router.post("/:informationId", updatePractitionerInformation);
-router.post("/:informationId", deletePractitionerInformation);
+router.put("/:informationId", updatePractitionerInformation);
+router.delete("/:informationId", deletePractitionerInformation);
 
 export default router;
