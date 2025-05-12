@@ -30,7 +30,11 @@ export const registerDocumentType = async (req, res) => {
 
     return res
       .status(201)
+<<<<<<< HEAD
       .json({ message: `Documento ${document_name} registrado con exito.` });
+=======
+      .json({ message: "Tipo de documento registrado con exito." });
+>>>>>>> Correccion-controladores
   } catch (error) {
     console.error(
       "Se ha presentado un error al intentar registrar el nuevo tipo de documento:",
@@ -63,7 +67,11 @@ export const updateDocumentType = async (req, res) => {
 
     return res
       .status(201)
+<<<<<<< HEAD
       .json({ message: `Documento ${document_name} actualizado con exito.` });
+=======
+      .json({ message: `Documento actualizado con exito.` });
+>>>>>>> Correccion-controladores
   } catch (error) {
     console.error(
       "Se ha presentado un error al intentar actualizar el tipo de documento:",

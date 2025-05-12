@@ -12,7 +12,7 @@ export const DocumentType = sequelize.define("document_types", {
   },
   // Nombre del tipo de documento
   document_name: {
-    type: DataTypes.STRING(40),
+    type: DataTypes.STRING(100),
     allowNull: false,
     unique: true,
   },

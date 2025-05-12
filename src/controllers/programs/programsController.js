@@ -1,12 +1,19 @@
+<<<<<<< HEAD
 import { Faculty } from "../../models/faculties.js";
 import { Institution } from "../../models/institutions.js";
+=======
+>>>>>>> Correccion-controladores
 import { Program } from "../../models/programs.js";
 
 // Controlador encargado de obtener todos los programas
 export const getPrograms = async (req, res) => {
   try {
     const programs = await Program.findAll({
+<<<<<<< HEAD
       include: ["id", "program_name", "code", "facultyId"],
+=======
+      attributes: ["id", "program_name", "code", "facultyId"],
+>>>>>>> Correccion-controladores
     });
 
     return res.status(200).json(programs);
@@ -48,12 +55,22 @@ export const updateProgram = async (req, res) => {
     const { programId } = req.params;
     const { program_name, code } = req.body;
 
+<<<<<<< HEAD
     const program = await Faculty.findByPk(programId);
     if (!program)
       return res.status(404).json({ error: "Programa no encontrado." });
 
     program.program_name = program_name;
     program.code = code;
+=======
+    const program = await Program.findByPk(programId);
+    if (!program)
+      return res.status(404).json({ error: "Programa no encontrado." });
+
+    if (program_name && program_name !== program.program_name)
+      program.program_name = program_name;
+    if (code && code !== program.code) program.code = code;
+>>>>>>> Correccion-controladores
 
     await program.save();
 
@@ -75,7 +92,11 @@ export const deleteProgram = async (req, res) => {
   try {
     const { programId } = req.params;
 
+<<<<<<< HEAD
     const program = await Faculty.findByPk(programId);
+=======
+    const program = await Program.findByPk(programId);
+>>>>>>> Correccion-controladores
     if (!program)
       return res.status(404).json({ error: "Programa no encontrada." });
 
@@ -93,6 +114,7 @@ export const deleteProgram = async (req, res) => {
     });
   }
 };
+<<<<<<< HEAD
 
 // Controlador encargado de obtener una facultad por ID
 export const getInstitutionById = async (req, res) => {
@@ -120,3 +142,5 @@ export const getInstitutionById = async (req, res) => {
     });
   }
 };
+=======
+>>>>>>> Correccion-controladores

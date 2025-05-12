@@ -33,7 +33,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/gobsucre/v1/auth", AuthRoutes);
 app.use("/api/gobsucre/v1/users", UserRoutes);
 app.use("/api/gobsucre/v1/documents", DocumnetsRoutes);
+<<<<<<< HEAD
 app.use("/api/gobsucre/v1/documents/types", DocumnetTypesRoutes);
+=======
+app.use("/api/gobsucre/v1/documents-types", DocumnetTypesRoutes);
+>>>>>>> Correccion-controladores
 app.use("/api/gobsucre/v1/intitutions", InstitutionsRoutes);
 app.use("/api/gobsucre/v1/faculties", FacultiesRoutes);
 app.use("/api/gobsucre/v1/programs", ProgramsRoutes);

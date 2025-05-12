@@ -1,10 +1,12 @@
 import { Document } from "../../models/documents.js";
+import { DocumentType } from "../../models/documentTypes.js";
 
 // Controlador encargado de obtener todos los documentos de la base de datos
 export const getDocuments = async (req, res) => {
   try {
     const documents = await Document.findAll({
-      attributes: ["id", "documentTypesId", "document"],
+      attributes: ["id", "document", "fileUrl"],
+      include: { model: DocumentType, attributes: ["document_name"] },
     });
 
     return res.status(200).json(documents);
@@ -138,7 +140,6 @@ export const deleteDocument = async (req, res) => {
 
     return res.status(200).json({
       message: "Documento eliminado con éxito.",
-      file: req.file.filename,
     });
   } catch (error) {
     console.error(

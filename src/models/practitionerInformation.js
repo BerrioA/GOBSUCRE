@@ -7,7 +7,7 @@ import { Program } from "./programs.js";
 
 // Definición del modelo de información del practicante
 export const PractitionerInformation = sequelize.define(
-  "practitioner_information",
+  "practitioner_informations",
   {
     // Id identificador de la información del practicante
     id: {
@@ -26,7 +26,11 @@ export const PractitionerInformation = sequelize.define(
       },
     },
     // Id de la facultad de la universidad o institucion a la que pertenece el practicante
+<<<<<<< HEAD
     FacultyId: {
+=======
+    facultyId: {
+>>>>>>> Correccion-controladores
       type: DataTypes.UUID,
       allowNull: false,
       references: {
