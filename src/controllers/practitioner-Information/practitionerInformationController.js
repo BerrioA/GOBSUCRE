@@ -1,12 +1,32 @@
+import { Faculty } from "../../models/faculties.js";
+import { Institution } from "../../models/institutions.js";
 import { PractitionerInformation } from "../../models/practitionerInformation.js";
+import { Program } from "../../models/programs.js";
 import { User } from "../../models/users.js";
 
 // Controlador encargado de obtener toda la informacion de los practicantes
 export const getPractitionerInformation = async (req, res) => {
   try {
-    const information = await PractitionerInformation.findAll();
+    const information = await PractitionerInformation.findAll({
+      include: [
+        { model: Institution, attributes: ["university_name"] },
+        { model: Faculty, attributes: ["faculty_name"] },
+        { model: Program, attributes: ["program_name"] },
+      ],
+    });
 
-    return res.status(200).json(information);
+    const infoStudent = information.map((item) => {
+      return {
+        id: item.id,
+        start_date: item.start_date,
+        status: item.status,
+        university_name: item.institution?.university_name,
+        faculty_name: item.faculty?.faculty_name,
+        program_name: item.program?.program_name,
+      };
+    });
+
+    return res.status(200).json(infoStudent);
   } catch (error) {
     console.log(
       "Se ha producido un error al intentar obtener los datos de los practicantes:",
