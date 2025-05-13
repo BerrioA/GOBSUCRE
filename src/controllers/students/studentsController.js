@@ -3,6 +3,9 @@ import { Rol } from "../../models/roles.js";
 import { User } from "../../models/users.js";
 import { DocumentType } from "../../models/documentTypes.js";
 import { PractitionerInformation } from "../../models/practitionerInformation.js";
+import { Institution } from "../../models/institutions.js";
+import { Faculty } from "../../models/faculties.js";
+import { Program } from "../../models/programs.js";
 
 export const getStudents = async (req, res) => {
   try {
@@ -82,26 +85,34 @@ export const getStudentByDocumentId = async (req, res) => {
         {
           model: Rol,
           where: { role_name: "Estudiante" },
+          attributes: ["role_name"],
         },
         {
           model: Document,
-          attributes: ["id", "document", "fileUrl", "documentTypesId"],
+          attributes: ["document", "fileUrl"],
           include: [
             {
               model: DocumentType,
-              attributes: ["id", "document_name"],
+              attributes: ["document_name"],
             },
           ],
         },
         {
           model: PractitionerInformation,
-          attributes: [
-            "id",
-            "start_date",
-            "status",
-            "institutionId",
-            "FacultyId",
-            "programId",
+          attributes: ["id", "start_date", "status", "facultyId", "programId"],
+          include: [
+            {
+              model: Institution,
+              attributes: ["university_name"],
+            },
+            {
+              model: Faculty,
+              attributes: ["faculty_name"],
+            },
+            {
+              model: Program,
+              attributes: ["program_name"],
+            },
           ],
         },
       ],
@@ -113,7 +124,34 @@ export const getStudentByDocumentId = async (req, res) => {
       });
     }
 
-    return res.status(200).json(student);
+    // Aplanando respuesta
+    const infoStudent = {
+      id: student.id,
+      name: student.name,
+      middle_name: student.middle_name,
+      last_name: student.last_name,
+      second_last_name: student.second_last_name,
+      document_type: student.document_type,
+      document_number: student.document_number,
+      cellphone: student.cellphone,
+      email: student.email,
+      role_name: student.role?.role_name || null,
+      start_date: student.practitioner_information?.start_date || null,
+      status: student.practitioner_information?.status || null,
+      institution_name:
+        student.practitioner_information?.institution?.university_name || null,
+      faculty_name:
+        student.practitioner_information?.faculty?.faculty_name || null,
+      program_name:
+        student.practitioner_information?.program?.program_name || null,
+      documents: student.documents.map((doc) => ({
+        document: doc.document,
+        fileUrl: doc.fileUrl,
+        document_name: doc.document_type?.document_name || null,
+      })),
+    };
+
+    return res.status(200).json(infoStudent);
   } catch (error) {
     console.error("Error al obtener los datos del estudiante:", error);
     return res.status(500).json({
