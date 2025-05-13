@@ -44,11 +44,7 @@ export const getPractitionerInformation = async (req, res) => {
 export const registerPractitionerInformation = async (req, res) => {
   try {
     const { userId } = req.params;
-<<<<<<< HEAD
-    const { institutionId, FacultyId, programId, start_date } = req.body;
-=======
     const { institutionId, facultyId, programId, start_date } = req.body;
->>>>>>> Correccion-controladores
 
     const practitioner = await User.findByPk(userId);
     if (!practitioner) return res.status(404).json("Estudiante no encontrado.");
@@ -56,11 +52,7 @@ export const registerPractitionerInformation = async (req, res) => {
     await PractitionerInformation.create({
       userId,
       institutionId,
-<<<<<<< HEAD
-      FacultyId,
-=======
       facultyId,
->>>>>>> Correccion-controladores
       programId,
       start_date,
     });
@@ -87,11 +79,7 @@ export const updatePractitionerInformation = async (req, res) => {
     const { informationId } = req.params;
     const { institutionId, FacultyId, programId, start_date } = req.body;
 
-<<<<<<< HEAD
-    const information = await User.findByPk(informationId);
-=======
     const information = await PractitionerInformation.findByPk(informationId);
->>>>>>> Correccion-controladores
     if (!information)
       return res
         .status(404)
@@ -106,27 +94,16 @@ export const updatePractitionerInformation = async (req, res) => {
 
     return res
       .status(201)
-<<<<<<< HEAD
-      .json("Informacion del practicante registrada con exito.");
-  } catch (error) {
-    console.log(
-      "Se ha presentado un error al intentar rgistrar la informacion del practicante:",
-=======
       .json("Informacion del practicante actualizada con exito.");
   } catch (error) {
     console.log(
       "Se ha presentado un error al intentar actualizar la informacion del practicante:",
->>>>>>> Correccion-controladores
       error
     );
 
     return res.status(500).json({
       error:
-<<<<<<< HEAD
-        "Se ha presentado un error al intentar rgistrar la informacion del practicante",
-=======
         "Se ha presentado un error al intentar actualizar la informacion del practicante.",
->>>>>>> Correccion-controladores
     });
   }
 };

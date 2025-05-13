@@ -26,11 +26,7 @@ export const PractitionerInformation = sequelize.define(
       },
     },
     // Id de la facultad de la universidad o institucion a la que pertenece el practicante
-<<<<<<< HEAD
-    FacultyId: {
-=======
     facultyId: {
->>>>>>> Correccion-controladores
       type: DataTypes.UUID,
       allowNull: false,
       references: {

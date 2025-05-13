@@ -10,14 +10,6 @@ import { Program } from "../../models/programs.js";
 export const getStudents = async (req, res) => {
   try {
     const studens = await User.findAll({
-<<<<<<< HEAD
-      include: [
-        {
-          model: Rol,
-          where: {
-            role_name: "Estudiante",
-          },
-=======
       attributes: [
         "id",
         "name",
@@ -34,7 +26,6 @@ export const getStudents = async (req, res) => {
           model: Rol,
           where: { role_name: "Estudiante" },
           attributes: ["role_name"],
->>>>>>> Correccion-controladores
         },
       ],
     });
@@ -42,12 +33,8 @@ export const getStudents = async (req, res) => {
     return res.status(200).json(studens);
   } catch (error) {
     console.log(
-<<<<<<< HEAD
-      "Se ha presentado un error al intentar optener los datos de los estudiantes."
-=======
       "Se ha presentado un error al intentar optener los datos de los estudiantes.",
       error
->>>>>>> Correccion-controladores
     );
 
     return res.status(500).json({
