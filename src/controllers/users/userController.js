@@ -62,6 +62,8 @@ export const registerUser = async (req, res) => {
       {
         neighborhood: address.neighborhood,
         address: address.address,
+        city: address.city,
+        department: address.department,
         userId: newUser.id,
       },
       { transaction: t }

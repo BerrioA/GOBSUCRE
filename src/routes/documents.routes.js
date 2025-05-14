@@ -6,6 +6,8 @@ import {
   getDocuments,
   updateDocument,
 } from "../controllers/documents/documentController.js";
+import { validateDocumentUpload } from "../middlewares/documents/validatedUploadDocument.js";
+import { validateDocumentUpdate } from "../middlewares/documents/validatedUpdateDocument.js";
 
 const router = Router();
 
@@ -14,28 +16,31 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
   },
-  filename: (req, file, cb) => {
-    // O mantener el nombre original
-    cb(null, file.originalname);
-  },
   // filename: (req, file, cb) => {
-  //   // Puedes añadir un timestamp para evitar sobreescribir archivos con el mismo nombre
-  //   const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-  //   const extension = file.originalname.split(".").pop();
-  //   cb(null, `${uniqueSuffix}.${extension}`);
   //   // O mantener el nombre original
-  //   // cb(null, file.originalname);
+  //   cb(null, file.originalname);
   // },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const extension = file.originalname.split(".").pop();
+    cb(null, `${uniqueSuffix}.${extension}`);
+    // O mantener el nombre original
+    // cb(null, file.originalname);
+  },
 });
 
 // Filtro para tipos de archivo permitidos (opcional)
 const fileFilter = (req, file, cb) => {
-  // Acepta solo ciertos tipos de archivos
-  const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
+  const allowedTypes = [
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ];
+
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Tipo de archivo no permitido"), false);
+    cb(new Error("Solo se permiten archivos PDF o Word."), false);
   }
 };
 
@@ -50,8 +55,18 @@ const upload = multer({
 
 // Rutas
 router.get("/", getDocuments);
-router.post("/:userId", upload.single("document"), documentUpload);
-router.put("/:documentId", upload.single("document"), updateDocument);
+router.post(
+  "/:userId",
+  upload.single("document"),
+  validateDocumentUpload,
+  documentUpload
+);
+router.put(
+  "/:documentId",
+  upload.single("document"),
+  validateDocumentUpdate,
+  updateDocument
+);
 router.delete("/:documentId", deleteDocument);
 
 export default router;

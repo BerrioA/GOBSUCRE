@@ -59,7 +59,7 @@ export const registerPractitionerInformation = async (req, res) => {
 
     return res
       .status(201)
-      .json("Informacion del practicante registrada con exito.");
+      .json({ message: "Informacion del practicante registrada con exito." });
   } catch (error) {
     console.log(
       "Se ha presentado un error al intentar rgistrar la informacion del practicante:",
@@ -76,10 +76,12 @@ export const registerPractitionerInformation = async (req, res) => {
 // Controlador encargado de actualizar la informacion de un practicante
 export const updatePractitionerInformation = async (req, res) => {
   try {
-    const { informationId } = req.params;
+    const { userId } = req.params;
     const { institutionId, FacultyId, programId, start_date } = req.body;
 
-    const information = await PractitionerInformation.findByPk(informationId);
+    const information = await PractitionerInformation.findOne({
+      where: { userId: userId },
+    });
     if (!information)
       return res
         .status(404)
@@ -94,7 +96,7 @@ export const updatePractitionerInformation = async (req, res) => {
 
     return res
       .status(201)
-      .json("Informacion del practicante actualizada con exito.");
+      .json({ message: "Informacion del practicante actualizada con exito." });
   } catch (error) {
     console.log(
       "Se ha presentado un error al intentar actualizar la informacion del practicante:",

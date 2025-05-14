@@ -11,6 +11,7 @@ import FacultiesRoutes from "./routes/faculties.routes.js";
 import ProgramsRoutes from "./routes/programs.routes.js";
 import PractitionerInformationRouter from "./routes/practitionerInformation.routes.js";
 import StudentsRoutes from "./routes/students.routes.js";
+import AddressRoutes from "./routes/address.routes.js";
 
 const app = express();
 
@@ -42,5 +43,6 @@ app.use(
   PractitionerInformationRouter
 );
 app.use("/api/gobsucre/v1/students", StudentsRoutes);
+app.use("/api/gobsucre/v1/address", AddressRoutes);
 
 export default app;

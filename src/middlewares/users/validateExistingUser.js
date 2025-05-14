@@ -26,7 +26,6 @@ export const validateExistingUser = async (req, res, next) => {
       }
     }
 
-    // Si no hay errores, continuar con el siguiente middleware o controlador
     next();
   } catch (error) {
     console.error(

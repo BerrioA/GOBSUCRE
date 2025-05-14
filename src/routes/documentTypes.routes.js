@@ -5,12 +5,14 @@ import {
   registerDocumentType,
   updateDocumentType,
 } from "../controllers/documents/documentTypesController.js";
+import { validateRegisterDocumentType } from "../middlewares/documents/validatedRegisterDocumentType.js";
+import { validateUpdateDocumentType } from "../middlewares/documents/validatedUpdateDocumentType.js";
 
 const router = Router();
 
 router.get("/", getDocumentTypes);
-router.post("/", registerDocumentType);
-router.put("/:documentId", updateDocumentType);
+router.post("/", validateRegisterDocumentType, registerDocumentType);
+router.put("/:documentId", validateUpdateDocumentType, updateDocumentType);
 router.delete("/:documentId", deleteDocumentType);
 
 export default router;

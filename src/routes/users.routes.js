@@ -13,6 +13,7 @@ import { validationRegisterUsers } from "../middlewares/users/validateRegisterUs
 import { validateExistingUser } from "../middlewares/users/validateExistingUser.js";
 import { validationUpdateUsers } from "../middlewares/users/validateUpdateUser.js";
 import { validateIdUser } from "../middlewares/params/validateIdUser.js";
+import { validationRegisterAddress } from "../middlewares/address/validatedRegisterAddress.js";
 
 const router = Router();
 
@@ -24,7 +25,13 @@ const router = Router();
 // GET /api/users/:idUser - Obtener un usuario por su ID
 // PUT /api/users/me/password/:idUser - Actualizar la contraseña de un usuario logueado
 router.get("/", getAllUsers);
-router.post("/", validateExistingUser, validationRegisterUsers, registerUser);
+router.post(
+  "/",
+  validateExistingUser,
+  validationRegisterUsers,
+  validationRegisterAddress,
+  registerUser
+);
 router.patch("/:idUser", validationUpdateUsers, updateUser);
 router.delete("/:idUser", validateIdUser, deleteUser);
 router.get("/:idUser", validateIdUser, getUserById);
