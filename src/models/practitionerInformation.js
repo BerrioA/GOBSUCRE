@@ -4,6 +4,8 @@ import { User } from "./users.js";
 import { Institution } from "./institutions.js";
 import { Faculty } from "./faculties.js";
 import { Program } from "./programs.js";
+import { Secretary } from "./secretary.js";
+import { Undersecretary } from "./undersecretary.js";
 
 // Definición del modelo de información del practicante
 export const PractitionerInformation = sequelize.define(
@@ -47,6 +49,24 @@ export const PractitionerInformation = sequelize.define(
     start_date: {
       type: DataTypes.DATE,
       allowNull: false,
+    },
+    // Id de la dependencia a la cual sera asignado el estudiante
+    secretaryId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: Secretary,
+        key: "id",
+      },
+    },
+    // Id de la subdependencia a la cual sera asignado el estudiante
+    undersecretaryId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: Undersecretary,
+        key: "id",
+      },
     },
     // Estado del usuario
     status: {
