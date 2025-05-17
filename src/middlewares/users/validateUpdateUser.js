@@ -10,7 +10,7 @@ const firstLetter = (str) => {
 export const validationUpdateUsers = [
   body("name")
     .trim()
-    .optional()
+    .optional({ checkFalsy: true })
     .isString()
     .matches(/^[A-Za-zÁÉÍÓÚáéíóúÑñ]+$/)
     .withMessage("El primer nombre contiene caracteres no válidos.")

@@ -9,6 +9,7 @@ import {
   SendVerificationCode,
   WelcomeEmail,
 } from "../../middlewares/email/sendEmail.js";
+import { Rol } from "../../models/roles.js";
 
 // Controlador encargado de hacer el loguin del usuario
 export const login = async (req, res) => {
@@ -80,23 +81,25 @@ export const logout = async (req, res) => {
 export const profile = async (req, res) => {
   try {
     const user = await User.findByPk(req.uid, {
-      attributes: [
-        "id",
-        "name",
-        "middle_name",
-        "last_name",
-        "second_last_name",
-        "rolId",
-        "email",
-        "isVerified",
-      ],
+      include: [{ model: Rol, attributes: ["role_name"] }],
     });
+
+    const useer = {
+      id: user.id,
+      name: user.name,
+      middle_name: user.middle_name,
+      last_name: user.last_name,
+      second_last_name: user.second_last_name,
+      email: user.email,
+      role: user.role?.role_name,
+      isVerified: user.isVerified,
+    };
 
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado." });
     }
 
-    return res.status(200).json(user);
+    return res.status(200).json(useer);
   } catch (error) {
     console.error("Error al obtener el perfil del usuario:", error);
 

@@ -87,7 +87,7 @@ export const registerUser = async (req, res) => {
 // Controlador encargado de actualizar un usuario en la base de datos
 export const updateUser = async (req, res) => {
   try {
-    const { idUser } = req.params;
+    const { userId } = req.params;
     const {
       name,
       middle_name,
@@ -100,7 +100,7 @@ export const updateUser = async (req, res) => {
     } = req.body;
 
     // Buscar el usuario por ID
-    const existingUser = await User.findByPk(idUser);
+    const existingUser = await User.findByPk(userId);
     if (!existingUser) {
       return res.status(404).json({ error: "Usuario no encontrado." });
     }
@@ -134,7 +134,6 @@ export const updateUser = async (req, res) => {
       existingUser.email = email;
     }
 
-    // Actualizar el usuario
     await existingUser.update({
       name,
       middle_name,
@@ -161,10 +160,10 @@ export const updateUser = async (req, res) => {
 // Controlador encargado de eliminar un usuario en la base de datos
 export const deleteUser = async (req, res) => {
   try {
-    const { idUser } = req.params;
+    const { userId } = req.params;
 
     // Buscar el usuario por ID
-    const existingUser = await User.findByPk(idUser);
+    const existingUser = await User.findByPk(userId);
     if (!existingUser) {
       return res.status(404).json({ error: "Usuario no encontrado." });
     }
@@ -187,10 +186,10 @@ export const deleteUser = async (req, res) => {
 // Controlador encargado de optener un usuario por ID
 export const getUserById = async (req, res) => {
   try {
-    const { idUser } = req.params;
+    const { userId } = req.params;
 
     // Buscar el usuario por ID
-    const existingUser = await User.findByPk(idUser, {
+    const existingUser = await User.findByPk(userId, {
       attributes: {
         exclude: [
           "document_type",
@@ -221,14 +220,14 @@ export const getUserById = async (req, res) => {
 // Controlador encargado de actualizar la contraseña de un usuario
 export const updatePassword = async (req, res) => {
   try {
-    const { idUser } = req.params;
-    const { currentPassword, newPassword } = req.body;
-
     // Buscar el usuario por ID
-    const existingUser = await User.findByPk(idUser);
+    const existingUser = await User.findByPk(req.uid);
+
     if (!existingUser) {
       return res.status(404).json({ error: "Usuario no encontrado." });
     }
+
+    const { currentPassword, newPassword } = req.body;
 
     // Verificar la contraseña actual
     const isPasswordValid = await bcrypt.compare(
@@ -278,15 +277,13 @@ export const sendPasswordRecoveryUrl = async (req, res) => {
 
     // Datos a enviar encriptados en el correo electrónico
     const data = {
-      email: existingUser.email,
+      email,
       expiresIn: new Date(Date.now() + 15 * 60 * 1000), // 15 minutos
       encryptedCode,
     };
 
-    // Pasar los datos a JSON para luego encriptarlos
     const verificationCode = JSON.stringify(data);
 
-    // Encriptar el nuevo código de verificación
     const secretCode = CryptoJS.AES.encrypt(
       verificationCode,
       process.env.SECRET_ENCRIPT

@@ -2,6 +2,8 @@ import { Faculty } from "../../models/faculties.js";
 import { Institution } from "../../models/institutions.js";
 import { PractitionerInformation } from "../../models/practitionerInformation.js";
 import { Program } from "../../models/programs.js";
+import { Secretary } from "../../models/secretary.js";
+import { Undersecretary } from "../../models/undersecretary.js";
 import { User } from "../../models/users.js";
 
 // Controlador encargado de obtener toda la informacion de los practicantes
@@ -12,6 +14,11 @@ export const getPractitionerInformation = async (req, res) => {
         { model: Institution, attributes: ["university_name"] },
         { model: Faculty, attributes: ["faculty_name"] },
         { model: Program, attributes: ["program_name"] },
+        {
+          model: Secretary,
+          attributes: ["secretary_name"],
+        },
+        { model: Undersecretary, attributes: ["undersecretary_name"] },
       ],
     });
 
@@ -20,9 +27,11 @@ export const getPractitionerInformation = async (req, res) => {
         id: item.id,
         start_date: item.start_date,
         status: item.status,
-        university_name: item.institution?.university_name,
-        faculty_name: item.faculty?.faculty_name,
-        program_name: item.program?.program_name,
+        university: item.institution?.university_name,
+        faculty: item.faculty?.faculty_name,
+        program: item.program?.program_name,
+        dependence: item.secretary?.secretary_name,
+        subdependency: item.undersecretary?.undersecretary_name,
       };
     });
 
@@ -77,7 +86,7 @@ export const registerPractitionerInformation = async (req, res) => {
 export const updatePractitionerInformation = async (req, res) => {
   try {
     const { informationId } = req.params;
-    const { institutionId, FacultyId, programId, start_date } = req.body;
+    const { institutionId, facultyId, programId, start_date } = req.body;
 
     const information = await PractitionerInformation.findByPk(informationId);
     if (!information)
@@ -86,9 +95,53 @@ export const updatePractitionerInformation = async (req, res) => {
         .json("No se ha encontrado la informacion del estudiante.");
 
     information.institutionId = institutionId;
-    information.FacultyId = FacultyId;
+    information.facultyId = facultyId;
     information.programId = programId;
     information.start_date = start_date;
+
+    await information.save();
+
+    return res
+      .status(201)
+      .json("Informacion del practicante actualizada con exito.");
+  } catch (error) {
+    console.log(
+      "Se ha presentado un error al intentar actualizar la informacion del practicante:",
+      error
+    );
+
+    return res.status(500).json({
+      error:
+        "Se ha presentado un error al intentar actualizar la informacion del practicante.",
+    });
+  }
+};
+
+// Controlador encargado de actualizar la informacion de un practicante pero solo como administrador o Talento humano
+export const updatePractitionerInformationByAdmin = async () => {
+  try {
+    const { informationId } = req.params;
+    const {
+      institutionId,
+      facultyId,
+      programId,
+      start_date,
+      secretaryId,
+      undersecretaryId,
+    } = req.body;
+
+    const information = await PractitionerInformation.findByPk(informationId);
+    if (!information)
+      return res
+        .status(404)
+        .json("No se ha encontrado la informacion del estudiante.");
+
+    information.institutionId = institutionId;
+    information.facultyId = facultyId;
+    information.programId = programId;
+    information.start_date = start_date;
+    information.undersecretaryId = undersecretaryId;
+    information.secretaryId = secretaryId;
 
     await information.save();
 
@@ -117,7 +170,7 @@ export const deletePractitionerInformation = async (req, res) => {
     if (!information)
       return res
         .status(404)
-        .json("No se ha encontrado la informacion del estudiante.");
+        .json("No se ha encontrado la informacion del practicante.");
 
     await information.destroy();
 
@@ -132,7 +185,7 @@ export const deletePractitionerInformation = async (req, res) => {
 
     return res.status(500).json({
       error:
-        "Se ha presentado un error al intentar eliminar la informacion del practicante",
+        "Se ha presentado un error al intentar eliminar la informacion del practicante.",
     });
   }
 };

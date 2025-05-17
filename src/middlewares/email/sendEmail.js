@@ -51,7 +51,7 @@ export const SendUrlResetPassword = async (email, resetPasswordUrl) => {
       text: "Hemos recibido una solicitud para restablecer tu contraseña en GOBSUCRE.",
       html: Url_Template.replace("{urlCode}", resetPasswordUrl).replace(
         "{cabecera}",
-        "Lik de reset de password."
+        "Link de reset de password."
       ),
       // html body
     });

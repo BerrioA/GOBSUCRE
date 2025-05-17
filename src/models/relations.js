@@ -10,17 +10,13 @@ import { Program } from "./programs.js";
 import { Document } from "./documents.js";
 import { DocumentType } from "./documentTypes.js";
 
-// Usuario - Rol
+// Rol - Usuario
 Rol.hasMany(User, { foreignKey: "rolId" });
 User.belongsTo(Rol, { foreignKey: "rolId" });
 
 // Usuario - Dirección
 User.hasOne(Address, { foreignKey: "userId" });
 Address.belongsTo(User, { foreignKey: "userId" });
-
-// Tipo de documentos - Documentos
-DocumentType.hasMany(Document, { foreignKey: "documentTypesId" });
-Document.belongsTo(DocumentType, { foreignKey: "documentTypesId" });
 
 // Usuario - Documentos
 User.hasMany(Document, { foreignKey: "userId" });
@@ -30,6 +26,10 @@ Document.belongsTo(User, { foreignKey: "userId" });
 User.hasOne(PractitionerInformation, { foreignKey: "userId" });
 PractitionerInformation.belongsTo(User, { foreignKey: "userId" });
 
+// Tipo de documentos - Documentos
+DocumentType.hasMany(Document, { foreignKey: "documentTypesId" });
+Document.belongsTo(DocumentType, { foreignKey: "documentTypesId" });
+
 // Institución - Facultad
 Institution.hasMany(Faculty, { foreignKey: "institutionId" });
 Faculty.belongsTo(Institution, { foreignKey: "institutionId" });
@@ -38,17 +38,19 @@ Faculty.belongsTo(Institution, { foreignKey: "institutionId" });
 Faculty.hasMany(Program, { foreignKey: "facultyId" });
 Program.belongsTo(Faculty, { foreignKey: "facultyId" });
 
-// Relaciones del practicante
+// Porgrama - Informacion del practicante
 Program.hasMany(PractitionerInformation, { foreignKey: "programId" });
 PractitionerInformation.belongsTo(Program, { foreignKey: "programId" });
 
+// Facultad - Informacion del practicante
 Faculty.hasMany(PractitionerInformation, { foreignKey: "facultyId" });
 PractitionerInformation.belongsTo(Faculty, { foreignKey: "facultyId" });
 
+// Institucion - Informacion del practicante
 Institution.hasMany(PractitionerInformation, { foreignKey: "institutionId" });
 PractitionerInformation.belongsTo(Institution, { foreignKey: "institutionId" });
 
-// Relación corregida entre Secretary y Undersecretary
+// Secretaria - Subsecretarias
 Secretary.hasMany(Undersecretary, {
   foreignKey: "secretaryCode",
   sourceKey: "code",
@@ -56,6 +58,18 @@ Secretary.hasMany(Undersecretary, {
 Undersecretary.belongsTo(Secretary, {
   foreignKey: "secretaryCode",
   targetKey: "code",
+});
+
+// Secretaria - Informacion del practicante
+Secretary.hasMany(PractitionerInformation, { foreignKey: "secretaryId" });
+PractitionerInformation.belongsTo(Secretary, { foreignKey: "secretaryId" });
+
+// Subsecretaria - Informacion del practicante
+Undersecretary.hasMany(PractitionerInformation, {
+  foreignKey: "undersecretaryId",
+});
+PractitionerInformation.belongsTo(Undersecretary, {
+  foreignKey: "undersecretaryId",
 });
 
 // Datos de secretarías y subsecretarías

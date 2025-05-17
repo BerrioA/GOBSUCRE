@@ -2,7 +2,7 @@ import { param } from "express-validator";
 import { validationResultExpress } from "../express-validator.js";
 
 export const validateIdUser = [
-  param("idUser")
+  param("userId")
     .trim()
     .notEmpty()
     .withMessage("El ID del usuario es obligatorio.")

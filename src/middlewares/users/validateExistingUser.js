@@ -26,7 +26,6 @@ export const validateExistingUser = async (req, res, next) => {
       }
     }
 
-    // Si no hay errores, continuar con el siguiente middleware o controlador
     next();
   } catch (error) {
     console.error(
@@ -34,9 +33,8 @@ export const validateExistingUser = async (req, res, next) => {
       error
     );
 
-    // Manejo de errores
     return res.status(500).json({
-      message: "Error interno del servidor",
+      error: "Error interno del servidor",
     });
   }
 };
