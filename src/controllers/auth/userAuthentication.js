@@ -84,7 +84,11 @@ export const profile = async (req, res) => {
       include: [{ model: Rol, attributes: ["role_name"] }],
     });
 
-    const useer = {
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado." });
+    }
+
+    const userProfile = {
       id: user.id,
       name: user.name,
       middle_name: user.middle_name,
@@ -95,11 +99,7 @@ export const profile = async (req, res) => {
       isVerified: user.isVerified,
     };
 
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado." });
-    }
-
-    return res.status(200).json(useer);
+    return res.status(200).json(userProfile);
   } catch (error) {
     console.error("Error al obtener el perfil del usuario:", error);
 

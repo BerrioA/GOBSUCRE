@@ -5,12 +5,32 @@ import {
   registerInstitution,
   updateInstitution,
 } from "../controllers/institutions/institutionController.js";
+import {
+  validationRegisterInstitution,
+  validationUpdateInstitution,
+} from "../middlewares/institutions/validatedRegisterInstitution.js";
+import { requireToken } from "../middlewares/auth/requireToken.js";
+import { verifyAdmin, verifyAllUsers } from "../middlewares/auth/verifyUser.js";
+import { validateExistingInstitution } from "../middlewares/institutions/validatedExistingInstitution.js";
 
 const router = Router();
 
-router.get("/", getInstitutionsAllInformation);
-router.post("/", registerInstitution);
-router.put("/:institutionId", updateInstitution);
-router.delete("/:institutionId", deleteInstitution);
+router.get("/", requireToken, verifyAllUsers, getInstitutionsAllInformation);
+router.post(
+  "/",
+  requireToken,
+  verifyAdmin,
+  validateExistingInstitution,
+  validationRegisterInstitution,
+  registerInstitution
+);
+router.put(
+  "/:institutionId",
+  requireToken,
+  verifyAdmin,
+  validationUpdateInstitution,
+  updateInstitution
+);
+router.delete("/:institutionId", requireToken, verifyAdmin, deleteInstitution);
 
 export default router;

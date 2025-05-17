@@ -24,14 +24,12 @@ export const Address = sequelize.define("addresses", {
   // Ciudad del usuario
   city: {
     type: DataTypes.STRING(50),
-    allowNull: true,
-    defaultValue: "Sincelejo",
+    allowNull: false,
   },
   // Departamento del usuario
   department: {
     type: DataTypes.STRING(50),
-    allowNull: true,
-    defaultValue: "Sucre",
+    allowNull: false,
   },
   // Id del usuario al que pertenece la dirección
   userId: {

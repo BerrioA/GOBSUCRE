@@ -82,6 +82,48 @@ export const registerPractitionerInformation = async (req, res) => {
   }
 };
 
+// Controlador encargado de registrar la informacion de un practicante pero solo como administrador o Talento humano
+export const registerPractitionerInformationByAdmin = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const {
+      institutionId,
+      facultyId,
+      programId,
+      start_date,
+      secretaryId,
+      undersecretaryId,
+    } = req.body;
+
+    const practitioner = await User.findByPk(userId);
+    if (!practitioner) return res.status(404).json("Estudiante no encontrado.");
+
+    await PractitionerInformation.create({
+      userId,
+      institutionId,
+      facultyId,
+      programId,
+      start_date,
+      secretaryId,
+      undersecretaryId,
+    });
+
+    return res
+      .status(201)
+      .json("Informacion del practicante registrada con exito.");
+  } catch (error) {
+    console.log(
+      "Se ha presentado un error al intentar rgistrar la informacion del practicante:",
+      error
+    );
+
+    return res.status(500).json({
+      error:
+        "Se ha presentado un error al intentar rgistrar la informacion del practicante",
+    });
+  }
+};
+
 // Controlador encargado de actualizar la informacion de un practicante
 export const updatePractitionerInformation = async (req, res) => {
   try {

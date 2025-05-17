@@ -6,52 +6,63 @@ import {
   getDocuments,
   updateDocument,
 } from "../controllers/documents/documentController.js";
+import { validateIdUser } from "../middlewares/params/validateIdUser.js";
+import { requireToken } from "../middlewares/auth/requireToken.js";
+import { verifyAdmin, verifyAllUsers } from "../middlewares/auth/verifyUser.js";
+import { checkDocumentAlreadyExists } from "../middlewares/documents/validatedExistingDocuments.js";
 
 const router = Router();
 
-// Configurar el almacenamiento para multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const extension = file.originalname.split(".").pop();
+    cb(null, `${uniqueSuffix}.${extension}`);
     // O mantener el nombre original
-    cb(null, file.originalname);
+    // cb(null, file.originalname);
   },
-  // filename: (req, file, cb) => {
-  //   // Puedes añadir un timestamp para evitar sobreescribir archivos con el mismo nombre
-  //   const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-  //   const extension = file.originalname.split(".").pop();
-  //   cb(null, `${uniqueSuffix}.${extension}`);
-  //   // O mantener el nombre original
-  //   // cb(null, file.originalname);
-  // },
 });
 
-// Filtro para tipos de archivo permitidos (opcional)
 const fileFilter = (req, file, cb) => {
-  // Acepta solo ciertos tipos de archivos
-  const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
+  const allowedTypes = [
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ];
+
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
     cb(new Error("Tipo de archivo no permitido"), false);
   }
 };
-
-// Crear instancia de multer
 const upload = multer({
   storage,
-  // Opcional: elimina esta línea si quieres permitir todos los tipos de archivo
   fileFilter,
-  // Limitar a 5MB
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
 // Rutas
-router.get("/", getDocuments);
-router.post("/:userId", upload.single("document"), documentUpload);
-router.put("/:documentId", upload.single("document"), updateDocument);
-router.delete("/:documentId", deleteDocument);
+router.get("/", requireToken, verifyAdmin, getDocuments);
+router.post(
+  "/:userId",
+  upload.single("document"),
+  requireToken,
+  verifyAllUsers,
+  validateIdUser,
+  checkDocumentAlreadyExists,
+  documentUpload
+);
+router.put(
+  "/:documentId",
+  upload.single("document"),
+  requireToken,
+  verifyAllUsers,
+  updateDocument
+);
+router.delete("/:documentId", requireToken, verifyAdmin, deleteDocument);
 
 export default router;

@@ -8,7 +8,7 @@ const firstLetter = (str) => {
 
 // Middleware para validar los datos de registro de usuarios
 export const validationUpdateUsers = [
-  body("name")
+  body("user.name")
     .trim()
     .optional({ checkFalsy: true })
     .isString()
@@ -20,7 +20,7 @@ export const validationUpdateUsers = [
     .customSanitizer(firstLetter)
     .escape(),
 
-  body("middle_name")
+  body("user.middle_name")
     .optional()
     .trim()
     .isLength({ min: 3 })
@@ -30,7 +30,7 @@ export const validationUpdateUsers = [
     .customSanitizer(firstLetter)
     .escape(),
 
-  body("last_name")
+  body("user.last_name")
     .trim()
     .optional({ checkFalsy: true })
     .isString()
@@ -41,7 +41,7 @@ export const validationUpdateUsers = [
     .customSanitizer(firstLetter)
     .escape(),
 
-  body("second_last_name")
+  body("user.second_last_name")
     .trim()
     .optional({ checkFalsy: true })
     .isString()
@@ -52,7 +52,7 @@ export const validationUpdateUsers = [
     .customSanitizer(firstLetter)
     .escape(),
 
-  body("document_type")
+  body("user.document_type")
     .trim()
     .optional({ checkFalsy: true })
     .isString()
@@ -62,7 +62,7 @@ export const validationUpdateUsers = [
     .withMessage("El tipo de documento debe ser 'CC' o 'TI'")
     .escape(),
 
-  body("document_number")
+  body("user.document_number")
     .trim()
     .optional({ checkFalsy: true })
     .isNumeric()
@@ -71,7 +71,7 @@ export const validationUpdateUsers = [
     .withMessage("El número de documento debe tener entre 7 y 10 dígitos.")
     .escape(),
 
-  body("cellphone")
+  body("user.cellphone")
     .trim()
     .optional({ checkFalsy: true })
     .isNumeric()
@@ -80,7 +80,7 @@ export const validationUpdateUsers = [
     .withMessage("El número de celular debe tener 10 dígitos.")
     .escape(),
 
-  body("email")
+  body("user.email")
     .trim()
     .optional({ checkFalsy: true })
     .isEmail()
@@ -88,5 +88,63 @@ export const validationUpdateUsers = [
     .normalizeEmail()
     .escape(),
 
+  body("address.neighborhood")
+    .trim()
+    .optional({ checkFalsy: true })
+    .matches(/^[A-Za-z0-9#\-\sÁÉÍÓÚáéíóúÑñ]+$/)
+    .withMessage("El barrio contiene caracteres no válidos.")
+    .isLength({ min: 3 })
+    .withMessage("El nombre del barrio debe tener al menos 3 caracteres.")
+    .customSanitizer(firstLetter)
+    .escape(),
+
+  body("address.address")
+    .trim()
+    .optional({ checkFalsy: true })
+    .isString()
+    .matches(/^[A-Za-z0-9\s#-]+$/)
+    .withMessage("La dirección contiene caracteres no válidos.")
+    .escape(),
+
+  body("address.city")
+    .trim()
+    .optional({ checkFalsy: true })
+    .matches(/^[A-Za-z0-9#\-\sÁÉÍÓÚáéíóúÑñ]+$/)
+    .withMessage("La ciudad contiene caracteres no válidos.")
+    .isLength({ min: 3 })
+    .withMessage("La ciudad debe tener al menos 3 caracteres.")
+    .customSanitizer(firstLetter)
+    .escape(),
+
+  body("address.department")
+    .trim()
+    .optional({ checkFalsy: true })
+    .matches(/^[A-Za-z0-9#\-\sÁÉÍÓÚáéíóúÑñ]+$/)
+    .withMessage("El departamento contiene caracteres no válidos.")
+    .isLength({ min: 3 })
+    .withMessage("El departamento debe tener al menos 3 caracteres.")
+    .customSanitizer(firstLetter)
+    .escape(),
+
   validationResultExpress,
+];
+
+export const validationUpdatePassword = [
+  body("newPassword")
+    .trim()
+    .notEmpty()
+    .withMessage("La nueva contraseña es obligatoria.")
+    .isString()
+    .withMessage("La nueva contraseña debe ser una cadena de texto.")
+    .isStrongPassword({
+      minLength: 6,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 0,
+      minSymbols: 0,
+    })
+    .withMessage(
+      "La nueva contraseña debe tener al menos 6 caracteres, una mayúscula y una minúscula."
+    )
+    .escape(),
 ];

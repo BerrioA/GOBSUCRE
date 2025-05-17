@@ -26,12 +26,9 @@ export const getDocuments = async (req, res) => {
 export const documentUpload = async (req, res) => {
   try {
     const { userId } = req.params;
-    // Obtener el tipo de documento
     const { documentTypesId } = req.body;
 
-    // Verificar si es un solo archivo o múltiples
     if (req.file) {
-      // Un solo archivo
       await Document.create({
         documentTypesId,
         userId,
@@ -47,12 +44,8 @@ export const documentUpload = async (req, res) => {
         file: req.file.filename,
       });
     } else if (req.files && req.files.length > 0) {
-      // Múltiples archivos
       const savedDocuments = [];
 
-      // URL relativa para permitir el acceso acceso web
-
-      // Crear registros para cada archivo
       for (const file of req.files) {
         const newDoc = await Document.create({
           documentTypesId,

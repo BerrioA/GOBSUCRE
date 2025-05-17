@@ -131,5 +131,27 @@ export const validationRegisterUsers = [
     .withMessage("La dirección contiene caracteres no válidos.")
     .escape(),
 
+  body("address.city")
+    .trim()
+    .notEmpty()
+    .withMessage("La ciudad es obligatoria.")
+    .matches(/^[A-Za-z0-9#\-\sÁÉÍÓÚáéíóúÑñ]+$/)
+    .withMessage("La ciudad contiene caracteres no válidos.")
+    .isLength({ min: 3 })
+    .withMessage("La ciudad debe tener al menos 3 caracteres.")
+    .customSanitizer(firstLetter)
+    .escape(),
+
+  body("address.department")
+    .trim()
+    .notEmpty()
+    .withMessage("El departamento es obligatoria.")
+    .matches(/^[A-Za-z0-9#\-\sÁÉÍÓÚáéíóúÑñ]+$/)
+    .withMessage("El departamento contiene caracteres no válidos.")
+    .isLength({ min: 3 })
+    .withMessage("El departamento debe tener al menos 3 caracteres.")
+    .customSanitizer(firstLetter)
+    .escape(),
+
   validationResultExpress,
 ];

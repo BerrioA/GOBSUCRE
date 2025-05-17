@@ -37,11 +37,9 @@ export const registerUser = async (req, res) => {
   try {
     const { user, address } = req.body;
 
-    // Hash de la contraseña
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = await bcrypt.hash(user.password, salt);
 
-    // Crear el usuario
     const newUser = await User.create(
       {
         name: user.name,
@@ -57,24 +55,23 @@ export const registerUser = async (req, res) => {
       { transaction: t }
     );
 
-    // Crear la dirección asociada
     await Address.create(
       {
         neighborhood: address.neighborhood,
         address: address.address,
+        city: address.city,
+        department: address.department,
         userId: newUser.id,
       },
       { transaction: t }
     );
 
-    // Confirmación la transacción
     await t.commit();
 
     res.status(201).json({
       message: "Usuario registrado correctamente.",
     });
   } catch (error) {
-    // Revertir si algo falla
     await t.rollback();
     console.error("Error al registrar usuario:", error);
 
@@ -86,74 +83,58 @@ export const registerUser = async (req, res) => {
 
 // Controlador encargado de actualizar un usuario en la base de datos
 export const updateUser = async (req, res) => {
+  const t = await sequelize.transaction();
+
   try {
     const { userId } = req.params;
-    const {
-      name,
-      middle_name,
-      last_name,
-      second_last_name,
-      document_type,
-      document_number,
-      cellphone,
-      email,
-    } = req.body;
+    const { user, address } = req.body;
 
-    // Buscar el usuario por ID
-    const existingUser = await User.findByPk(userId);
+    const existingUser = await User.findByPk(userId, { transaction: t });
+
     if (!existingUser) {
+      await t.rollback();
       return res.status(404).json({ error: "Usuario no encontrado." });
     }
 
-    // Validacion de datos a actualizar para validar si hay cambios
-    if (name && name !== existingUser.name) {
-      existingUser.name = name;
-    }
-    if (middle_name && middle_name !== existingUser.middle_name) {
-      existingUser.middle_name = middle_name;
-    }
-    if (last_name && last_name !== existingUser.last_name) {
-      existingUser.last_name = last_name;
-    }
-    if (
-      second_last_name &&
-      second_last_name !== existingUser.second_last_name
-    ) {
-      existingUser.second_last_name = second_last_name;
-    }
-    if (document_type && document_type !== existingUser.document_type) {
-      existingUser.document_type = document_type;
-    }
-    if (document_number && document_number !== existingUser.document_number) {
-      existingUser.document_number = document_number;
-    }
-    if (cellphone && cellphone !== existingUser.cellphone) {
-      existingUser.cellphone = cellphone;
-    }
-    if (email && email !== existingUser.email) {
-      existingUser.email = email;
+    if (user && typeof user === "object") {
+      Object.keys(user).forEach((key) => {
+        if (user[key] !== undefined) {
+          existingUser[key] = user[key];
+        }
+      });
+      await existingUser.save({ transaction: t });
     }
 
-    await existingUser.update({
-      name,
-      middle_name,
-      last_name,
-      second_last_name,
-      document_type,
-      document_number,
-      cellphone,
-      email,
-    });
+    if (address && typeof address === "object") {
+      let userAddress = await Address.findOne({
+        where: { userId },
+        transaction: t,
+      });
 
-    res.status(200).json({
-      message: "Usuario actualizado correctamente.",
-    });
+      if (userAddress) {
+        Object.keys(address).forEach((key) => {
+          if (address[key] !== undefined) {
+            userAddress[key] = address[key];
+          }
+        });
+        await userAddress.save({ transaction: t });
+      } else {
+        await Address.create(
+          {
+            userId,
+            ...address,
+          },
+          { transaction: t }
+        );
+      }
+    }
+
+    await t.commit();
+    res.status(200).json({ message: "Usuario actualizado correctamente." });
   } catch (error) {
+    await t.rollback();
     console.error("Error al actualizar usuario:", error);
-
-    res.status(500).json({
-      error: "Ha ocurrido un error al actualizar el usuario.",
-    });
+    res.status(500).json({ error: "Error al actualizar el usuario." });
   }
 };
 
@@ -342,7 +323,6 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    // Extraer datos del código desencriptado
     let email, expiresIn, encryptedCode;
     try {
       const parsedData = JSON.parse(decryptedCode);
@@ -384,7 +364,6 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    // Buscar el usuario por email
     const existingUser = await User.findOne({
       where: { email },
     });
@@ -423,18 +402,15 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    // Verificar que ambos códigos coincidan
     if (decryptedVerificationCodeUser !== decryptedVerificationCode) {
       return res.status(400).json({
         error: "Código de verificación inválido.",
       });
     }
 
-    // Hash de la nueva contraseña
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-    // Actualizar la contraseña y limpiar los campos de verificación
     await existingUser.update({
       password: hashedPassword,
       verificationCode: null,

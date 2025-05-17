@@ -3,10 +3,12 @@ import {
   getStudentByDocumentId,
   getStudents,
 } from "../controllers/students/studentsController.js";
+import { requireToken } from "../middlewares/auth/requireToken.js";
+import { verifyAdmin } from "../middlewares/auth/verifyUser.js";
 
 const router = Router();
 
-router.get("/", getStudents);
-router.get("/:documentId", getStudentByDocumentId);
+router.get("/", requireToken, verifyAdmin, getStudents);
+router.get("/:documentId", requireToken, verifyAdmin, getStudentByDocumentId);
 
 export default router;

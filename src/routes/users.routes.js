@@ -11,10 +11,14 @@ import {
 } from "../controllers/users/userController.js";
 import { validationRegisterUsers } from "../middlewares/users/validateRegisterUser.js";
 import { validateExistingUser } from "../middlewares/users/validateExistingUser.js";
-import { validationUpdateUsers } from "../middlewares/users/validateUpdateUser.js";
+import {
+  validationUpdatePassword,
+  validationUpdateUsers,
+} from "../middlewares/users/validateUpdateUser.js";
 import { validateIdUser } from "../middlewares/params/validateIdUser.js";
 import { requireToken } from "../middlewares/auth/requireToken.js";
 import { verifyAdmin, verifyAllUsers } from "../middlewares/auth/verifyUser.js";
+import { validationEmail } from "../middlewares/email/validatedEmail.js";
 
 const router = Router();
 
@@ -37,7 +41,11 @@ router.delete(
 );
 router.get("/:userId", requireToken, verifyAdmin, validateIdUser, getUserById);
 router.put("/me/password", requireToken, verifyAllUsers, updatePassword);
-router.put("/send-password-recovery", sendPasswordRecoveryUrl);
-router.put("/reset-password/:verificationCode", resetPassword);
+router.put("/send-password-recovery", validationEmail, sendPasswordRecoveryUrl);
+router.put(
+  "/reset-password/:verificationCode",
+  validationUpdatePassword,
+  resetPassword
+);
 
 export default router;
