@@ -13,6 +13,8 @@ import PractitionerInformationRouter from "./routes/practitionerInformation.rout
 import StudentsRoutes from "./routes/students.routes.js";
 import DependenciesRoutes from "./routes/dependencies.routes.js";
 import PrivateRoutes from "./routes/private.routes.js";
+import swaggerUI from "swagger-ui-express";
+import spec from "./swagger/swagger.js";
 
 const app = express();
 
@@ -32,6 +34,12 @@ app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 
 // Rutas
+
+app.use(
+  "/api/gobsucre/v1/documentation",
+  swaggerUI.serve,
+  swaggerUI.setup(spec)
+);
 app.use("/api/gobsucre/v1/auth", AuthRoutes);
 app.use("/api/gobsucre/v1/users", UserRoutes);
 app.use("/api/gobsucre/v1/documents", DocumnetsRoutes);

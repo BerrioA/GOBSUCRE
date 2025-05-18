@@ -20,7 +20,12 @@ async function main() {
     // await sequelize.sync({ alter: true });
 
     const PORT = process.env.PORT || 3000;
-    app.listen(PORT);
+    app.listen(PORT, () => {
+      console.log(`Servidor corriendo en el puerto ${PORT}`);
+      console.log(
+        `Documentación GOBSUCRE disponible en: http://localhost:${PORT}/api/gobsucre/v1/documentation`
+      );
+    });
     console.log("✅ Servidor corriendo en el puerto:", PORT);
   } catch (error) {
     console.log(
