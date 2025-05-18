@@ -41,7 +41,6 @@ export const getAllUsers = async (req, res) => {
       .json({ error: "Ha ocurrido un error al optener todos los usuarios." });
   }
 };
-
 // Controlador encargado de registrar un nuevo usuario en la base de datos
 export const registerUser = async (req, res) => {
   const t = await sequelize.transaction();

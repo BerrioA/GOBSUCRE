@@ -45,5 +45,5 @@ app.use(
 );
 app.use("/api/gobsucre/v1/students", StudentsRoutes);
 app.use("/api/gobsucre/v1/dependencies", DependenciesRoutes);
-app.use("/api/gobsucre/v1/private/route/admin", PrivateRoutes);
+app.use("/api/gobsucre/v1/private-route/admin", PrivateRoutes);
 export default app;

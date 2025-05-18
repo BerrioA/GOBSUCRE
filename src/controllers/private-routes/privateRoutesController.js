@@ -4,6 +4,7 @@ import { Rol } from "../../models/roles.js";
 import { User } from "../../models/users.js";
 import bcrypt from "bcryptjs";
 
+// Controlador encargado de registrar el primer usuario en la base de datos como Admin
 export const privateRegisterAdmin = async (req, res) => {
   const t = await sequelize.transaction();
   try {
@@ -76,6 +77,52 @@ export const privateRegisterAdmin = async (req, res) => {
     return res.status(500).json({
       error:
         "Se ha presentado un error al intentar hacer el registro del administrador.",
+    });
+  }
+};
+
+// Controlador encargado de actualizar el rol a usuario en la base de datos
+export const updateUserRoleAdmin = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { rolId } = req.body;
+
+    const existingUser = await User.findByPk(userId);
+    if (!existingUser) {
+      return res.status(404).json({ error: "Usuario no encontrado." });
+    }
+    const existsRole = await Rol.findByPk(rolId);
+    if (!existsRole) {
+      return res.status(404).json({ error: "Rol no encontrado." });
+    }
+
+    await existingUser.update({
+      rolId: existsRole.id,
+    });
+
+    res.status(200).json({
+      message: "Rol de usuario actualizado correctamente.",
+    });
+  } catch (error) {
+    console.error("Error al actualizar el rol del usuario:", error);
+    res.status(500).json({ error: "Error al actualizar el rol del usuario." });
+  }
+};
+
+// Controlador encargado de obtener los roles de la base de datos
+export const getRoles = async (req, res) => {
+  try {
+    const roles = await Rol.findAll({ attributes: ["id", "role_name"] });
+
+    return res.status(200).json(roles);
+  } catch (error) {
+    console.log(
+      "Se ha presentado un error al intentar obtener los roles:",
+      error
+    );
+
+    return res.status(500).json({
+      error: "Se ha presentado un error al intentar obtener los roles.",
     });
   }
 };
