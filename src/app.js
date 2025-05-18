@@ -12,6 +12,7 @@ import ProgramsRoutes from "./routes/programs.routes.js";
 import PractitionerInformationRouter from "./routes/practitionerInformation.routes.js";
 import StudentsRoutes from "./routes/students.routes.js";
 import DependenciesRoutes from "./routes/dependencies.routes.js";
+import PrivateRoutes from "./routes/private.routes.js";
 
 const app = express();
 
@@ -44,4 +45,5 @@ app.use(
 );
 app.use("/api/gobsucre/v1/students", StudentsRoutes);
 app.use("/api/gobsucre/v1/dependencies", DependenciesRoutes);
+app.use("/api/gobsucre/v1/private/route/admin", PrivateRoutes);
 export default app;
