@@ -4,25 +4,36 @@ import { User } from "../../models/users.js";
 import { Address } from "../../models/address.js";
 import { sequelize } from "../../database/db.js";
 import { SendUrlResetPassword } from "../../middlewares/email/sendEmail.js";
+import { Rol } from "../../models/roles.js";
 
 // Controlador encargado de optener todos los usuarios de la base de datos
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: {
-        exclude: [
-          "document_type",
-          "document_number",
-          "password",
-          "verificationCode",
-          "lastResendTime",
-          "resendCount",
-          "createdAt",
-          "updatedAt",
-        ],
-      },
+      include: [
+        {
+          model: Rol,
+          attributes: ["role_name"],
+        },
+      ],
     });
-    res.status(200).json(users);
+
+    const infoUsers = users.map((user) => {
+      return {
+        id: user.id,
+        name: user.name,
+        middle_name: user.middle_name,
+        last_name: user.last_name,
+        second_last_name: user.second_last_name,
+        cellphone: user.cellphone,
+        email: user.email,
+        status: user.status,
+        isVerified: user.isVerified,
+        role: user.role?.role_name,
+      };
+    });
+
+    res.status(200).json(infoUsers);
   } catch (error) {
     console.error("Ha ocurrido un error al optener todos los users:", error);
     res
