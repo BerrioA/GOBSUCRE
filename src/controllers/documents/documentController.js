@@ -25,13 +25,12 @@ export const getDocuments = async (req, res) => {
 // Controlador encargado de la cargar los documentos
 export const documentUpload = async (req, res) => {
   try {
-    const { userId } = req.params;
     const { documentTypesId } = req.body;
 
     if (req.file) {
       await Document.create({
         documentTypesId,
-        userId,
+        userId: req.uid,
         document: req.file.filename,
         fileUrl: `/uploads/${req.file.filename}`,
         originalName: req.file.originalname,
@@ -49,7 +48,7 @@ export const documentUpload = async (req, res) => {
       for (const file of req.files) {
         const newDoc = await Document.create({
           documentTypesId,
-          userId,
+          userId: req.uid,
           document: req.file.filename,
           fileUrl: `/uploads/${req.file.filename}`,
           originalName: file.originalname,

@@ -164,7 +164,7 @@ router.get("/", requireToken, verifyAdmin, getDocuments);
  */
 
 router.post(
-  "/:userId",
+  "/",
   upload.single("document"),
   requireToken,
   verifyAllUsers,
