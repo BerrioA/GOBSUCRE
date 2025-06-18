@@ -3,9 +3,8 @@ import { Document } from "../../models/documents.js";
 export const checkDocumentAlreadyExists = async (req, res, next) => {
   try {
     const { documentTypesId } = req.body;
-    const { userId } = req.uid;
 
-    if (!documentTypesId || !userId) {
+    if (!documentTypesId) {
       return res.status(400).json({
         error: "Faltan datos necesarios para validar duplicados.",
       });
@@ -14,7 +13,7 @@ export const checkDocumentAlreadyExists = async (req, res, next) => {
     const existingDocument = await Document.findOne({
       where: {
         documentTypesId,
-        userId,
+        userId: req.uid,
       },
     });
 
