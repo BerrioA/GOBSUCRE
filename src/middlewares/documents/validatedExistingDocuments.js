@@ -3,7 +3,7 @@ import { Document } from "../../models/documents.js";
 export const checkDocumentAlreadyExists = async (req, res, next) => {
   try {
     const { documentTypesId } = req.body;
-    const { userId } = req.params;
+    const { userId } = req.uid;
 
     if (!documentTypesId || !userId) {
       return res.status(400).json({

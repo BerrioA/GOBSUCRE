@@ -6,7 +6,6 @@ import {
   getDocuments,
   updateDocument,
 } from "../controllers/documents/documentController.js";
-import { validateIdUser } from "../middlewares/params/validateIdUser.js";
 import { requireToken } from "../middlewares/auth/requireToken.js";
 import { verifyAdmin, verifyAllUsers } from "../middlewares/auth/verifyUser.js";
 import { checkDocumentAlreadyExists } from "../middlewares/documents/validatedExistingDocuments.js";
@@ -168,7 +167,6 @@ router.post(
   upload.single("document"),
   requireToken,
   verifyAllUsers,
-  validateIdUser,
   checkDocumentAlreadyExists,
   documentUpload
 );
