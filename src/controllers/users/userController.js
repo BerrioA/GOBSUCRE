@@ -15,6 +15,10 @@ export const getAllUsers = async (req, res) => {
           model: Rol,
           attributes: ["role_name"],
         },
+        {
+          model: Address,
+          attributes: ["neighborhood", "address", "city", "department"],
+        },
       ],
     });
 
@@ -25,22 +29,30 @@ export const getAllUsers = async (req, res) => {
         middle_name: user.middle_name,
         last_name: user.last_name,
         second_last_name: user.second_last_name,
+        document_number: user.document_number,
         cellphone: user.cellphone,
         email: user.email,
         status: user.status,
         isVerified: user.isVerified,
         role: user.role?.role_name,
+        address: user.address && {
+          neighborhood: user.address.neighborhood,
+          address: user.address.address,
+          city: user.address.city,
+          department: user.address.department,
+        },
       };
     });
 
     res.status(200).json(infoUsers);
   } catch (error) {
-    console.error("Ha ocurrido un error al optener todos los users:", error);
-    res
-      .status(500)
-      .json({ error: "Ha ocurrido un error al optener todos los usuarios." });
+    console.error("Ha ocurrido un error al obtener todos los usuarios:", error);
+    res.status(500).json({
+      error: "Ha ocurrido un error al obtener todos los usuarios.",
+    });
   }
 };
+
 // Controlador encargado de registrar un nuevo usuario en la base de datos
 export const registerUser = async (req, res) => {
   const t = await sequelize.transaction();
@@ -179,12 +191,10 @@ export const getUserById = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Buscar el usuario por ID
+    // Buscar el usuario por ID e incluir la dirección
     const existingUser = await User.findByPk(userId, {
       attributes: {
         exclude: [
-          "document_type",
-          "document_number",
           "password",
           "verificationCode",
           "lastResendTime",
@@ -193,7 +203,18 @@ export const getUserById = async (req, res) => {
           "updatedAt",
         ],
       },
+      include: [
+        {
+          model: Address,
+          attributes: ["neighborhood", "address", "city", "department"],
+        },
+        {
+          model: Rol,
+          attributes: ["role_name"],
+        },
+      ],
     });
+
     if (!existingUser) {
       return res.status(404).json({ error: "Usuario no encontrado." });
     }
