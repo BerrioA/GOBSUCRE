@@ -1,9 +1,9 @@
 import { Router } from "express";
 import {
-  deleteInstitution,
-  getInstitutionsAllInformation,
-  registerInstitution,
-  updateInstitution,
+ deleteInstitution, getInstitutionById,
+ getInstitutionsAllInformation,
+ registerInstitution,
+ updateInstitution,
 } from "../controllers/institutions/institutionController.js";
 import {
   validationRegisterInstitution,
@@ -40,6 +40,7 @@ const router = Router();
  *         description: Error interno del servidor
  */
 router.get("/", requireToken, verifyAllUsers, getInstitutionsAllInformation);
+router.get("/:institutionId", requireToken, verifyAdmin, getInstitutionById);
 /**
  * @swagger
  * /intitutions:
@@ -164,5 +165,6 @@ router.put(
  *         description: Error interno del servidor
  */
 router.delete("/:institutionId", requireToken, verifyAdmin, deleteInstitution);
+
 
 export default router;
