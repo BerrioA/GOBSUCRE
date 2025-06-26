@@ -36,6 +36,16 @@ export const validateRegisterPractitonerInformation = [
     )
     .escape(),
 
+  body("end_date")
+    .trim()
+    .notEmpty()
+    .withMessage("La fecha de finalización a practicas es obligatoria.")
+    .isISO8601({ strict: true })
+    .withMessage(
+      "La fecha de finalización debe ser una fecha válida con formato YYYY-MM-DD."
+    )
+    .escape(),
+
   body("secretaryId")
     .trim()
     .optional({ checkFalsy: true })

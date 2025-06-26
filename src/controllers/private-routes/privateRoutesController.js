@@ -85,22 +85,33 @@ export const privateRegisterAdmin = async (req, res) => {
 export const updateUserRoleAdmin = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { rolId } = req.body;
+    const { rolId, password } = req.body;
 
+    const adminUser = await User.findByPk(req.uid);
+
+    if (!adminUser) {
+      return res.status(404).json({ error: "Administrador no encontrado." });
+    }
+
+    const matchPassword = await bcrypt.compare(password, adminUser.password);
+    if (!matchPassword) {
+      return res.status(403).json({ message: "Credenciales incorrectas." });
+    }
+
+    // Buscar al usuario cuyo rol se quiere actualizar
     const existingUser = await User.findByPk(userId);
     if (!existingUser) {
       return res.status(404).json({ error: "Usuario no encontrado." });
     }
+
     const existsRole = await Rol.findByPk(rolId);
     if (!existsRole) {
       return res.status(404).json({ error: "Rol no encontrado." });
     }
 
-    await existingUser.update({
-      rolId: existsRole.id,
-    });
+    await existingUser.update({ rolId: existsRole.id });
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Rol de usuario actualizado correctamente.",
     });
   } catch (error) {

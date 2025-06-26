@@ -52,17 +52,19 @@ export const getPractitionerInformation = async (req, res) => {
 // Controlador encargado de registrar la informacion de un practicante
 export const registerPractitionerInformation = async (req, res) => {
   try {
-    const { institutionId, facultyId, programId, start_date } = req.body;
+    const { institutionId, facultyId, programId, start_date, end_date } =
+      req.body;
 
     const practitioner = await User.findByPk(req.uid);
     if (!practitioner) return res.status(404).json("Estudiante no encontrado.");
 
     await PractitionerInformation.create({
-      userId,
+      userId: req.uid,
       institutionId,
       facultyId,
       programId,
       start_date,
+      end_date,
     });
 
     return res
@@ -90,6 +92,7 @@ export const registerPractitionerInformationByAdmin = async (req, res) => {
       facultyId,
       programId,
       start_date,
+      end_date,
       secretaryId,
       undersecretaryId,
     } = req.body;
@@ -103,6 +106,7 @@ export const registerPractitionerInformationByAdmin = async (req, res) => {
       facultyId,
       programId,
       start_date,
+      end_date,
       secretaryId,
       undersecretaryId,
     });
@@ -127,7 +131,8 @@ export const registerPractitionerInformationByAdmin = async (req, res) => {
 export const updatePractitionerInformation = async (req, res) => {
   try {
     const { informationId } = req.params;
-    const { institutionId, facultyId, programId, start_date } = req.body;
+    const { institutionId, facultyId, programId, start_date, end_date } =
+      req.body;
 
     const information = await PractitionerInformation.findByPk(informationId);
     if (!information)
@@ -139,6 +144,7 @@ export const updatePractitionerInformation = async (req, res) => {
     information.facultyId = facultyId;
     information.programId = programId;
     information.start_date = start_date;
+    information.end_date = end_date;
 
     await information.save();
 
@@ -167,6 +173,7 @@ export const updatePractitionerInformationByAdmin = async () => {
       facultyId,
       programId,
       start_date,
+      end_date,
       secretaryId,
       undersecretaryId,
     } = req.body;
@@ -181,6 +188,7 @@ export const updatePractitionerInformationByAdmin = async () => {
     information.facultyId = facultyId;
     information.programId = programId;
     information.start_date = start_date;
+    information.end_date = end_date;
     information.undersecretaryId = undersecretaryId;
     information.secretaryId = secretaryId;
 
