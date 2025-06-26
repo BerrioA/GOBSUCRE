@@ -12,7 +12,7 @@ import { validateIdUser } from "../middlewares/params/validateIdUser.js";
 
 const router = Router();
 
-// Todos los roles
+// Obtener todos los roles
 /**
  * @swagger
  * /roles:
@@ -34,10 +34,8 @@ const router = Router();
  *                 properties:
  *                   id:
  *                     type: string
- *                     description: ID del rol
  *                   name:
  *                     type: string
- *                     description: Nombre del rol
  *               example:
  *                 - id: "1"
  *                   name: "Admin"
@@ -50,8 +48,7 @@ const router = Router();
  */
 router.get("/roles", requireToken, verifyAdmin, getRoles);
 
-// Registro de primer administrador con rol Administrador
-
+// Registro del primer administrador
 /**
  * @swagger
  * components:
@@ -136,7 +133,7 @@ router.get("/roles", requireToken, verifyAdmin, getRoles);
  * @swagger
  * /private-route/admin:
  *   post:
- *     summary: Registrar un usuario administrador privado (Solo permite utilizar esta ruta una vez si no existe administrador)
+ *     summary: Registrar un usuario administrador privado (solo si no existe un admin aún)
  *     tags: [Rutas privadas]
  *     requestBody:
  *       required: true
@@ -146,13 +143,12 @@ router.get("/roles", requireToken, verifyAdmin, getRoles);
  *             $ref: '#/components/schemas/RegisterUserRequest'
  *     responses:
  *       201:
- *         description: Usuario administrador privado registrado correctamente
+ *         description: Usuario administrador registrado correctamente
  *       400:
- *         description: Error de validación o usuario ya existente
+ *         description: Validación fallida o usuario ya existe
  *       500:
  *         description: Error interno del servidor
  */
-
 router.post(
   "/",
   validateExistingUser,
@@ -160,37 +156,45 @@ router.post(
   privateRegisterAdmin
 );
 
+// Actualizar rol de usuario
 /**
  * @swagger
  * /update-role/{userId}:
  *   patch:
- *     summary: Actualizar el rol de un usuario (Solo administrador)
- *     description: Permite a un administrador actualizar el rol asignado a un usuario específico.
+ *     summary: Actualizar el rol de un usuario (solo administradores)
+ *     description: El administrador debe confirmar su identidad proporcionando su contraseña para cambiar el rol de otro usuario.
  *     tags: [Rutas privadas]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: userId
  *         schema:
  *           type: string
  *         required: true
- *         description: ID del usuario al que se le actualizará el rol
+ *         description: ID del usuario cuyo rol se desea actualizar
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             properties:
- *               role_id:
- *                 type: string
- *                 description: ID del nuevo rol a asignar al usuario
  *             required:
  *               - rolId
+ *               - password
+ *             properties:
+ *               rolId:
+ *                 type: string
+ *                 description: ID del nuevo rol a asignar
+ *               password:
+ *                 type: string
+ *                 description: Contraseña del administrador (para verificar identidad)
  *             example:
- *               roleId: "64f1c3a23f9f7b0012f3d5c1"
+ *               rolId: "64f1c3a23f9f7b0012f3d5c1"
+ *               password: "adminpassword123"
  *     responses:
  *       200:
- *         description: Rol actualizado exitosamente
+ *         description: Rol actualizado correctamente
  *         content:
  *           application/json:
  *             schema:
@@ -198,15 +202,15 @@ router.post(
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Rol actualizado correctamente
+ *                   example: Rol de usuario actualizado correctamente.
  *       400:
- *         description: Datos inválidos o ID de usuario incorrecto
+ *         description: Datos inválidos o malformados
  *       401:
- *         description: No autorizado
+ *         description: Token inválido o no proporcionado
  *       403:
- *         description: Acceso denegado (solo administradores)
+ *         description: Credenciales incorrectas (contraseña incorrecta)
  *       404:
- *         description: Usuario no encontrado
+ *         description: Usuario o rol no encontrado
  *       500:
  *         description: Error interno del servidor
  */

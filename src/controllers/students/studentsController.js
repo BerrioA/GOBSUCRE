@@ -86,7 +86,14 @@ export const getStudentById = async (req, res) => {
         },
         {
           model: PractitionerInformation,
-          attributes: ["id", "start_date", "status", "facultyId", "programId"],
+          attributes: [
+            "id",
+            "start_date",
+            "end_date",
+            "status",
+            "facultyId",
+            "programId",
+          ],
           include: [
             {
               model: Institution,
@@ -124,6 +131,7 @@ export const getStudentById = async (req, res) => {
       email: student.email,
       role_name: student.role?.role_name || null,
       start_date: student.practitioner_information?.start_date || null,
+      end_date: student.practitioner_information?.end_date || null,
       status: student.practitioner_information?.status || null,
       institution_name:
         student.practitioner_information?.institution?.university_name || null,
@@ -190,7 +198,14 @@ export const getStudentByDocumentId = async (req, res) => {
         },
         {
           model: PractitionerInformation,
-          attributes: ["id", "start_date", "status", "facultyId", "programId"],
+          attributes: [
+            "id",
+            "start_date",
+            "end_date",
+            "status",
+            "facultyId",
+            "programId",
+          ],
           include: [
             {
               model: Institution,
@@ -228,6 +243,7 @@ export const getStudentByDocumentId = async (req, res) => {
       email: student.email,
       role_name: student.role?.role_name || null,
       start_date: student.practitioner_information?.start_date || null,
+      end_date: student.practitioner_information?.end_date || null,
       status: student.practitioner_information?.status || null,
       institution_name:
         student.practitioner_information?.institution?.university_name || null,
