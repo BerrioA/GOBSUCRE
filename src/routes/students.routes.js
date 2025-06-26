@@ -10,7 +10,7 @@ import { verifyAdmin, verifyAllUsers } from "../middlewares/auth/verifyUser.js";
 const router = Router();
 
 router.get("/", requireToken, verifyAdmin, getStudents);
-router.get("/studentId", requireToken, verifyAllUsers, getStudentById);
+router.get("/:studentId", requireToken, verifyAllUsers, getStudentById);
 router.get("/:documentId", requireToken, verifyAdmin, getStudentByDocumentId);
 
 export default router;
