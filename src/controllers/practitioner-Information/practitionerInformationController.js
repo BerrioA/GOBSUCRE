@@ -165,7 +165,7 @@ export const updatePractitionerInformation = async (req, res) => {
 };
 
 // Controlador encargado de actualizar la informacion de un practicante pero solo como administrador o Talento humano
-export const updatePractitionerInformationByAdmin = async () => {
+export const updatePractitionerInformationByAdmin = async (req, res) => {
   try {
     const { informationId } = req.params;
     const {
