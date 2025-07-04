@@ -9,7 +9,7 @@ import { Program } from "../../models/programs.js";
 
 export const getStudents = async (req, res) => {
   try {
-    const studens = await User.findAll({
+    const students = await User.findAll({
       attributes: [
         "id",
         "name",
@@ -27,22 +27,34 @@ export const getStudents = async (req, res) => {
           where: { role_name: "Estudiante" },
           attributes: ["role_name"],
         },
+        {
+          model: PractitionerInformation,
+          attributes: ["id"],
+        },
       ],
     });
 
-    return res.status(200).json(studens);
+    const result = students.map((student) => {
+      return {
+        ...student.get(),
+        informationId: student.practitioner_information?.id || null,
+      };
+    });
+
+    return res.status(200).json(result);
   } catch (error) {
     console.log(
-      "Se ha presentado un error al intentar optener los datos de los estudiantes.",
+      "Se ha presentado un error al intentar obtener los datos de los estudiantes.",
       error
     );
 
     return res.status(500).json({
       error:
-        "Se ha presentado un error al intentar optener los datos de los estudiantes.",
+        "Se ha presentado un error al intentar obtener los datos de los estudiantes.",
     });
   }
 };
+
 
 // Controlador encargado de buscar un estudiante por id
 export const getStudentById = async (req, res) => {
