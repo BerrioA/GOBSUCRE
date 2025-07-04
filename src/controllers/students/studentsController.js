@@ -142,6 +142,7 @@ export const getStudentById = async (req, res) => {
       cellphone: student.cellphone,
       email: student.email,
       role_name: student.role?.role_name || null,
+      informationId: student.practitioner_information?.id || null, // <-- Aquí lo integras
       start_date: student.practitioner_information?.start_date || null,
       end_date: student.practitioner_information?.end_date || null,
       status: student.practitioner_information?.status || null,
@@ -167,6 +168,7 @@ export const getStudentById = async (req, res) => {
     });
   }
 };
+
 
 // Controlador encargado de buscar un estudiante por número de documento
 export const getStudentByDocumentId = async (req, res) => {
