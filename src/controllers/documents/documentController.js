@@ -5,7 +5,7 @@ import { DocumentType } from "../../models/documentTypes.js";
 export const getDocuments = async (req, res) => {
   try {
     const documents = await Document.findAll({
-      attributes: ["id", "document", "fileUrl"],
+      attributes: ["id", "userId", "document", "fileUrl"],
       include: { model: DocumentType, attributes: ["document_name"] },
     });
 
