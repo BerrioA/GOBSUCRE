@@ -1,7 +1,12 @@
 import { Router } from "express";
-import { getDependencies } from "../controllers/dependencies/dependenciesController.js";
+import {
+  createSecretary,
+  deleteSecretary,
+  deleteUndersecretary,
+  getDependencies,
+} from "../controllers/dependencies/dependenciesController.js";
 import { requireToken } from "../middlewares/auth/requireToken.js";
-import { verifyAllUsers } from "../middlewares/auth/verifyUser.js";
+import { verifyAdmin, verifyAllUsers } from "../middlewares/auth/verifyUser.js";
 
 const router = Router();
 
@@ -41,6 +46,17 @@ const router = Router();
  *         description: Error interno del servidor
  */
 
+// Endpoints para las dependencias (EL ENPOINT GET, TRAE LAS DEPENDENCIAS Y LAS SUBDEPENDENCIAS DE ESTA)
 router.get("/", requireToken, verifyAllUsers, getDependencies);
+router.post("/", requireToken, verifyAdmin, createSecretary);
+router.delete("/:dependencyId", requireToken, verifyAdmin, deleteSecretary);
 
+// Endpoints para las Subdependencias
+router.post("/sub", requireToken, verifyAdmin, createSecretary);
+router.delete(
+  "/sub/:subdependencyId",
+  requireToken,
+  verifyAdmin,
+  deleteUndersecretary
+);
 export default router;

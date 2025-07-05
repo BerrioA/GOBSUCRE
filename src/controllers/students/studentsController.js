@@ -142,7 +142,7 @@ export const getStudentById = async (req, res) => {
       cellphone: student.cellphone,
       email: student.email,
       role_name: student.role?.role_name || null,
-      informationId: student.practitioner_information?.id || null, // <-- Aquí lo integras
+      informationId: student.practitioner_information?.id || null,
       start_date: student.practitioner_information?.start_date || null,
       end_date: student.practitioner_information?.end_date || null,
       status: student.practitioner_information?.status || null,
