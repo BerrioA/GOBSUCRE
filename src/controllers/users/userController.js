@@ -3,7 +3,10 @@ import CryptoJS from "crypto-js";
 import { User } from "../../models/users.js";
 import { Address } from "../../models/address.js";
 import { sequelize } from "../../database/db.js";
-import { SendUrlResetPassword } from "../../middlewares/email/sendEmail.js";
+import {
+  SendNumericCodePassword,
+  SendUrlResetPassword,
+} from "../../middlewares/email/sendEmail.js";
 import { Rol } from "../../models/roles.js";
 
 // Controlador encargado de optener todos los usuarios de la base de datos
@@ -458,5 +461,69 @@ export const resetPassword = async (req, res) => {
     return res.status(500).json({
       error: "Ha ocurrido un error al restablecer la contraseña.",
     });
+  }
+};
+
+export const sendResetCode = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    const generateNumericCode = () => {
+      return Math.floor(100000 + Math.random() * 900000).toString(); // Código de 6 dígitos
+    };
+
+    const verificationCode = generateNumericCode(); // Código plano
+    const expiresIn = Date.now() + 15 * 60 * 1000; // 15 minutos
+
+    // Guardamos el código y su expiración en el usuario
+    await user.update({
+      verificationCode,
+      verificationCodeExpires: expiresIn,
+    });
+
+    // Envía el correo con el código directo (sin cifrar)
+    await SendNumericCodePassword(user.email, verificationCode);
+
+    return res.status(200).json({ message: "Código enviado al correo." });
+  } catch (error) {
+    console.error("Error al enviar código:", error);
+    return res.status(500).json({ error: "No se pudo enviar el código." });
+  }
+};
+
+export const verifyCodeAndResetPassword = async (req, res) => {
+  try {
+    const { email, code, newPassword } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado." });
+    }
+
+    if (user.verificationCode !== code) {
+      return res.status(400).json({ error: "Código incorrecto." });
+    }
+
+    // Cambiar la contraseña
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    await user.update({
+      password: hashedPassword,
+      verificationCode: null,
+      verificationCodeExpires: null,
+    });
+
+    return res
+      .status(200)
+      .json({ message: "Contraseña actualizada con éxito." });
+  } catch (error) {
+    console.error("Error al verificar código:", error);
+    return res.status(500).json({ error: "Error al restablecer contraseña." });
   }
 };

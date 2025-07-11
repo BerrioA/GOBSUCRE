@@ -134,3 +134,38 @@ export const ResendValidationCode = async (email, verificationCode) => {
     };
   }
 };
+
+
+// Middleware encargado de enviar un código simple al correo
+export const SendNumericCodePassword = async (email, code) => {
+  try {
+    await transporter.sendMail({
+      from: '"GOBSUCRE" <emaildev1214@gmail.com>',
+      to: email,
+      subject: "Código para restablecer tu contraseña",
+      text: `Tu código para restablecer la contraseña es: ${code}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2>Restablecimiento de contraseña</h2>
+          <p>Hemos recibido una solicitud para restablecer tu contraseña.</p>
+          <p><strong>Tu código es:</strong></p>
+          <div style="font-size: 24px; font-weight: bold; margin: 20px 0;">${code}</div>
+          <p>Este código expirará en 15 minutos.</p>
+          <p>Si no solicitaste este código, puedes ignorar este mensaje.</p>
+        </div>
+      `,
+    });
+
+    return {
+      success: true,
+      message: "Código enviado al correo.",
+    };
+  } catch (error) {
+    console.error("Error al enviar el código:", error);
+
+    return {
+      success: false,
+      message: "No se pudo enviar el código al correo.",
+    };
+  }
+};

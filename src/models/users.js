@@ -2,6 +2,7 @@ import { DataTypes } from "sequelize";
 import { sequelize } from "../database/db.js";
 import { Rol } from "./roles.js";
 
+
 export const User = sequelize.define("users", {
   // Id identificador de los Usuarios
   id: {

@@ -6,8 +6,10 @@ import {
   registerUser,
   resetPassword,
   sendPasswordRecoveryUrl,
+  sendResetCode,
   updatePassword,
   updateUser,
+  verifyCodeAndResetPassword,
 } from "../controllers/users/userController.js";
 import { validationRegisterUsers } from "../middlewares/users/validateRegisterUser.js";
 import { validateExistingUser } from "../middlewares/users/validateExistingUser.js";
@@ -279,7 +281,13 @@ router.delete(
  *         description: Error interno del servidor
  */
 
-router.get("/:userId", requireToken, verifyAdmin, validateIdUser, getUserById);
+router.get(
+  "/:userId",
+  requireToken,
+  verifyAllUsers,
+  validateIdUser,
+  getUserById
+);
 /**
  * @swagger
  * /users/me/password:
@@ -324,8 +332,8 @@ router.put("/me/password", requireToken, verifyAllUsers, updatePassword);
  * @swagger
  * /users/send-password-recovery:
  *   put:
- *     summary: Enviar enlace de recuperación de contraseña
- *     description: Envía un correo electrónico al usuario con un enlace para recuperar su contraseña.
+ *     summary: Enviar código de recuperación de contraseña
+ *     description: Envía un correo electrónico al usuario con un código para recuperar su contraseña.
  *     tags: [Users]
  *     requestBody:
  *       required: true
@@ -351,7 +359,7 @@ router.put("/me/password", requireToken, verifyAllUsers, updatePassword);
  *         description: Error del servidor al enviar el correo
  */
 
-router.put("/send-password-recovery", validationEmail, sendPasswordRecoveryUrl);
+router.put("/send-password-recovery", validationEmail, sendResetCode);
 /**
  * @swagger
  * /users/reset-password/{verificationCode}:
@@ -390,9 +398,9 @@ router.put("/send-password-recovery", validationEmail, sendPasswordRecoveryUrl);
  */
 
 router.put(
-  "/reset-password/:verificationCode",
+  "/reset-password",
   validationUpdatePassword,
-  resetPassword
+  verifyCodeAndResetPassword
 );
 
 export default router;
