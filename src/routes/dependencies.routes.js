@@ -1,9 +1,9 @@
 import { Router } from "express";
 import {
-  createSecretary,
-  deleteSecretary,
-  deleteUndersecretary,
-  getDependencies,
+    createSecretary, createUndersecretary,
+    deleteSecretary,
+    deleteUndersecretary,
+    getDependencies,
 } from "../controllers/dependencies/dependenciesController.js";
 import { requireToken } from "../middlewares/auth/requireToken.js";
 import { verifyAdmin, verifyAllUsers } from "../middlewares/auth/verifyUser.js";
@@ -52,7 +52,7 @@ router.post("/", requireToken, verifyAdmin, createSecretary);
 router.delete("/:dependencyId", requireToken, verifyAdmin, deleteSecretary);
 
 // Endpoints para las Subdependencias
-router.post("/sub", requireToken, verifyAdmin, createSecretary);
+router.post("/sub", requireToken, verifyAdmin, createUndersecretary);
 router.delete(
   "/sub/:subdependencyId",
   requireToken,
