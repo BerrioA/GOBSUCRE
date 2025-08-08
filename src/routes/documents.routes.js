@@ -9,6 +9,7 @@ import {
 import { requireToken } from "../middlewares/auth/requireToken.js";
 import { verifyAdmin, verifyAllUsers } from "../middlewares/auth/verifyUser.js";
 import { checkDocumentAlreadyExists } from "../middlewares/documents/validatedExistingDocuments.js";
+import { downloadDocument } from "../controllers/documents/documentDownloadController.js";
 
 const router = Router();
 
@@ -278,20 +279,6 @@ router.put(
 router.delete("/:documentId", requireToken, verifyAdmin, deleteDocument);
 
 
-router.get("/download/:filename", requireToken, (req, res) => {
-  const { filename } = req.params;
-  const filePath = path.join(process.cwd(), "uploads", filename);
-
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ error: "Archivo no encontrado" });
-  }
-
-  res.download(filePath, filename, (err) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: "Error al descargar el archivo" });
-    }
-  });
-});
+router.get("/download/:filename", requireToken, downloadDocument);
 
 export default router;

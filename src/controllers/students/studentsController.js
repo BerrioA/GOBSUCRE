@@ -168,7 +168,7 @@ export const getStudentById = async (req, res) => {
         student.practitioner_information?.program?.program_name || null,
       documents: student.documents.map((doc) => ({
         document: doc.document,
-        fileUrl: `${process.env.BASE_URL}/uploads/${doc.fileUrl}`,
+        fileUrl: `${process.env.BASE_URL}/documents/download/${doc.fileUrl}`,
         document_name: doc.document_type?.document_name || null,
       })),
     };
