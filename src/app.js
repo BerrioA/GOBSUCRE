@@ -16,6 +16,7 @@ import PrivateRoutes from "./routes/private.routes.js";
 import swaggerUI from "swagger-ui-express";
 import spec from "./swagger/swagger.js";
 import "./cron/practitionerStatusCron.js";
+import path from "path";
 
 const app = express();
 
