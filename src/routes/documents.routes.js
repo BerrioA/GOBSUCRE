@@ -18,11 +18,8 @@ const storage = multer.diskStorage({
     cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const extension = file.originalname.split(".").pop();
-    cb(null, `${uniqueSuffix}.${extension}`);
-    // O mantener el nombre original
-    // cb(null, file.originalname);
+    const originalName = path.basename(file.originalname);
+    cb(null, originalName);
   },
 });
 
@@ -277,7 +274,6 @@ router.put(
  */
 
 router.delete("/:documentId", requireToken, verifyAdmin, deleteDocument);
-
 
 router.get("/download/:filename", requireToken, downloadDocument);
 

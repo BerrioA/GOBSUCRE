@@ -3,31 +3,33 @@ import { Document } from "../../models/documents.js";
 export const checkDocumentAlreadyExists = async (req, res, next) => {
   try {
     const { documentTypesId } = req.body;
+    const userId = req.uid;
+    const fileName = req.file?.originalname;
 
-    if (!documentTypesId) {
-      return res.status(400).json({
-        error: "Faltan datos necesarios para validar duplicados.",
-      });
+    if (!fileName) {
+      return res.status(400).json({ error: "No se envió ningún archivo" });
     }
 
-    const existingDocument = await Document.findOne({
+    // Buscar si ya existe un documento con ese nombre para ese usuario
+    const existingDoc = await Document.findOne({
       where: {
+        userId,
+        originalName: fileName,
         documentTypesId,
-        userId: req.uid,
       },
     });
 
-    if (existingDocument) {
-      return res.status(409).json({
-        error: "Ya existe un documento registrado para este tipo.",
+    if (existingDoc) {
+      return res.status(400).json({
+        error: `Ya existe un documento llamado "${fileName}" para este usuario.`,
       });
     }
 
-    next(); // No hay conflicto, puede continuar
+    next();
   } catch (error) {
-    console.error("Error al verificar documento duplicado:", error);
+    console.error("Error validando documento existente:", error);
     return res.status(500).json({
-      error: "Error interno al verificar documento duplicado.",
+      error: "Error al validar si el documento ya existe.",
     });
   }
 };

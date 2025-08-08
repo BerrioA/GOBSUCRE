@@ -42,43 +42,17 @@ export const documentUpload = async (req, res) => {
         message: "Documento cargado con éxito.",
         file: req.file.filename,
       });
-    } else if (req.files && req.files.length > 0) {
-      const savedDocuments = [];
-
-      for (const file of req.files) {
-        const newDoc = await Document.create({
-          documentTypesId,
-          userId: req.uid,
-          document: req.file.filename,
-          fileUrl: `/uploads/${req.file.filename}`,
-          originalName: file.originalname,
-          fileSize: file.size,
-          mimeType: file.mimetype,
-        });
-
-        savedDocuments.push({
-          id: newDoc.id,
-          filename: file.filename,
-        });
-      }
-
-      return res.status(201).json({
-        message: "Documentos múltiples cargados con éxito.",
-      });
     } else {
       return res.status(400).json({ error: "No se recibieron archivos" });
     }
   } catch (error) {
-    console.error(
-      "Se ha presentado un error al intentar cargar los documentos.",
-      error
-    );
-
+    console.error("Error al cargar documento:", error);
     return res.status(500).json({
-      error: "Se ha presentado un error al intentar cargar los documentos.",
+      error: "Se ha presentado un error al intentar cargar el documento.",
     });
   }
 };
+
 
 // Controlador encargado de actualizar un documento
 export const updateDocument = async (req, res) => {
