@@ -17,6 +17,7 @@ import swaggerUI from "swagger-ui-express";
 import spec from "./swagger/swagger.js";
 import "./cron/practitionerStatusCron.js";
 import path from "path";
+import documentsRouter from "./routes/documentDownload.routes.js";
 
 const app = express();
 
@@ -57,4 +58,6 @@ app.use(
 app.use("/api/gobsucre/v1/students", StudentsRoutes);
 app.use("/api/gobsucre/v1/dependencies", DependenciesRoutes);
 app.use("/api/gobsucre/v1/private-route/admin", PrivateRoutes);
+
+app.use("/documents", documentsRouter);
 export default app;
