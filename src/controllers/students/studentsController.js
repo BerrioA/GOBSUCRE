@@ -173,7 +173,6 @@ export const getStudentById = async (req, res) => {
       })),
     };
 
-
     return res.status(200).json(infoStudent);
   } catch (error) {
     console.error("Error al obtener los datos del estudiante:", error);
@@ -283,6 +282,7 @@ export const getStudentByDocumentId = async (req, res) => {
         document: doc.document,
         fileUrl: doc.fileUrl,
         document_name: doc.document_type?.document_name || null,
+        downloadUrl: `${process.env.BASE_URL}/documents/download/${doc.id}`,
       })),
     };
 

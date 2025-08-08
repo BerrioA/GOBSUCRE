@@ -276,6 +276,7 @@ router.put(
 
 router.delete("/:documentId", requireToken, verifyAdmin, deleteDocument);
 
-router.get("/download/:filename", requireToken, downloadDocument);
+router.get("/download/:documentId", requireToken, downloadDocument);
+
 
 export default router;
