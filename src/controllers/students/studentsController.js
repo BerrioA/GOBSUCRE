@@ -6,6 +6,8 @@ import { PractitionerInformation } from "../../models/practitionerInformation.js
 import { Institution } from "../../models/institutions.js";
 import { Faculty } from "../../models/faculties.js";
 import { Program } from "../../models/programs.js";
+import { Secretary } from "../../models/secretary.js";
+import { Undersecretary } from "../../models/undersecretary.js";
 
 export const getStudents = async (req, res) => {
   try {
@@ -54,7 +56,6 @@ export const getStudents = async (req, res) => {
     });
   }
 };
-
 
 // Controlador encargado de buscar un estudiante por id
 export const getStudentById = async (req, res) => {
@@ -119,6 +120,14 @@ export const getStudentById = async (req, res) => {
               model: Program,
               attributes: ["program_name"],
             },
+            {
+              model: Secretary,
+              attributes: ["secretary_name"],
+            },
+            {
+              model: Undersecretary,
+              attributes: ["undersecretary_name"],
+            },
           ],
         },
       ],
@@ -146,6 +155,11 @@ export const getStudentById = async (req, res) => {
       start_date: student.practitioner_information?.start_date || null,
       end_date: student.practitioner_information?.end_date || null,
       status: student.practitioner_information?.status || null,
+      dependence:
+        student.practitioner_information?.secretary?.secretary_name || null,
+      subdependence:
+        student.practitioner_information?.undersecretary?.undersecretary_name ||
+        null,
       institution_name:
         student.practitioner_information?.institution?.university_name || null,
       faculty_name:
@@ -168,7 +182,6 @@ export const getStudentById = async (req, res) => {
     });
   }
 };
-
 
 // Controlador encargado de buscar un estudiante por número de documento
 export const getStudentByDocumentId = async (req, res) => {
