@@ -15,6 +15,7 @@ import DependenciesRoutes from "./routes/dependencies.routes.js";
 import PrivateRoutes from "./routes/private.routes.js";
 import swaggerUI from "swagger-ui-express";
 import spec from "./swagger/swagger.js";
+import "./cron/practitionerStatusCron.js";
 
 const app = express();
 
