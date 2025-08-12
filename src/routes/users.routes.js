@@ -4,8 +4,6 @@ import {
   getAllUsers,
   getUserById,
   registerUser,
-  resetPassword,
-  sendPasswordRecoveryUrl,
   sendResetCode,
   updatePassword,
   updateUser,

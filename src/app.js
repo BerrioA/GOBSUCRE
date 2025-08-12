@@ -18,16 +18,8 @@ import spec from "./swagger/swagger.js";
 import "./cron/practitionerStatusCron.js";
 import path from "path";
 import documentsRouter from "./routes/documentDownload.routes.js";
-
+import { corsOptions } from "./config/cors.js";
 const app = express();
-
-// ⚡ Configurar CORS
-const corsOptions = {
-  origin: ["http://localhost:5173", "http://localhost:5174"],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-};
 
 //middlewares
 app.use(helmet());
