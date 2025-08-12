@@ -98,7 +98,7 @@ router.get("/", requireToken, verifyAdmin, getPractitionerInformation);
  */
 
 router.post(
-  "/",
+  "/:userId",
   requireToken,
   verifyStudent,
   validateIdUser,
